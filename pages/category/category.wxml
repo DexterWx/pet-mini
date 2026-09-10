@@ -1,0 +1,42 @@
+<view class="cat">
+  <view class="cat-search">
+    <search-bar readonly bind:tap="goSearch"></search-bar>
+  </view>
+
+  <view class="cat-body">
+    <scroll-view class="cat-side" scroll-y>
+      <state-view status="{{catStatus}}" empty-text="暂无分类" bind:retry="loadCategories">
+        <view
+          class="cat-item {{activeCategoryId === item.id ? 'active' : ''}}"
+          wx:for="{{categories}}"
+          wx:key="id"
+          data-id="{{item.id}}"
+          bindtap="onSelectCategory"
+        >{{item.name}}</view>
+      </state-view>
+    </scroll-view>
+
+    <scroll-view class="cat-main" scroll-y bindscrolltolower="onLoadMore">
+      <view class="sort-bar">
+        <view class="sort-item {{sort === 'default' ? 'active' : ''}}" data-sort="default" bindtap="onSort">综合</view>
+        <view class="sort-item {{sort === 'sales' ? 'active' : ''}}" data-sort="sales" bindtap="onSort">销量</view>
+        <view class="sort-item {{sort === 'price' ? 'active' : ''}}" data-sort="price" bindtap="onSort">价格 {{sort === 'price' ? (order === 'asc' ? '↑' : '↓') : '⇅'}}</view>
+      </view>
+
+      <state-view status="{{listStatus}}" empty-text="该分类暂无商品" bind:retry="retryList">
+        <view class="cat-list">
+          <goods-card
+            wx:for="{{products}}"
+            wx:key="id"
+            goods="{{item}}"
+            layout="list"
+            bind:cardtap="onCardTap"
+            bind:cardadd="onCardAdd"
+          ></goods-card>
+        </view>
+        <view class="load-more" wx:if="{{hasMore}}" bindtap="onLoadMore">加载更多</view>
+        <view class="load-more" wx:elif="{{products.length}}">没有更多了</view>
+      </state-view>
+    </scroll-view>
+  </view>
+</view>

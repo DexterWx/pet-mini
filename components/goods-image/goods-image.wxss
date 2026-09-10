@@ -1,0 +1,24 @@
+@import "/assets/styles/placeholder.wxss";
+
+.gi {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.gi-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 语义化尺寸类（组件内部定义，避免跨组件样式隔离失效） */
+.gi-banner { width: 100%; height: 320rpx; border-radius: 24rpx; }
+.gi-grid { width: 100%; height: 340rpx; }
+.gi-list { width: 180rpx; height: 180rpx; border-radius: 8rpx; }
+.gi-thumb { width: 160rpx; height: 160rpx; border-radius: 8rpx; }
+.gi-mid { width: 140rpx; height: 140rpx; border-radius: 8rpx; }
+.gi-small { width: 120rpx; height: 120rpx; border-radius: 8rpx; }
+.gi-avatar { width: 120rpx; height: 120rpx; border-radius: 50%; }
+.gi-tall { width: 100%; height: 750rpx; }

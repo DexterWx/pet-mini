@@ -1,0 +1,47 @@
+/**app.wxss**/
+@import "/assets/styles/theme.wxss";
+@import "/assets/styles/placeholder.wxss";
+
+page {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+view, text, image, scroll-view, swiper, input, button {
+  box-sizing: border-box;
+}
+
+/* 通用两列网格 */
+.grid-2 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.grid-2 > .grid-item {
+  width: 48.5%;
+  margin-bottom: 20rpx;
+}
+
+/* 通用卡片 */
+.card {
+  background: var(--color-card);
+  border-radius: var(--radius);
+  padding: 24rpx;
+}
+
+/* 通用主色按钮 */
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  border-radius: 999rpx;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 30rpx;
+}
+
+.btn-primary-hover {
+  opacity: 0.85;
+}

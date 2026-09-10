@@ -1,0 +1,32 @@
+.sb {
+  display: flex;
+  align-items: center;
+  height: 68rpx;
+  padding: 0 24rpx;
+  border-radius: 999rpx;
+  background: #EDEDED;
+}
+
+.sb-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+  color: var(--color-text-sub, #999);
+}
+
+.sb-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: var(--color-text, #333);
+}
+
+.sb-ph {
+  flex: 1;
+  font-size: 28rpx;
+  color: var(--color-text-sub, #999);
+}
+
+.sb-clear {
+  padding: 0 12rpx;
+  color: var(--color-text-sub, #999);
+  font-size: 32rpx;
+}

@@ -1,0 +1,41 @@
+<view class="olist">
+  <view class="tabs">
+    <view
+      class="tab {{activeStatus === item.key ? 'active' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="key"
+      data-key="{{item.key}}"
+      bindtap="onTab"
+    >{{item.label}}</view>
+  </view>
+
+  <state-view status="{{status}}" empty-text="没有相关信息" bind:retry="load">
+    <view class="orders">
+      <view class="order" wx:for="{{orders}}" wx:key="id" data-id="{{item.id}}" bindtap="onDetail">
+        <view class="o-head">
+          <text class="o-no">{{item.orderNo}}</text>
+          <text class="o-status">{{item.statusText}}</text>
+        </view>
+        <view class="o-items">
+          <goods-image
+            wx:for="{{item.items}}"
+            wx:for-item="it"
+            wx:key="productId"
+            src="{{it.image}}"
+            customClass="gi-small"
+          ></goods-image>
+        </view>
+        <view class="o-foot">
+          <text class="o-time">{{item.timeText}}</text>
+          <text class="o-total">合计 ¥{{item.totalText}}</text>
+          <view
+            class="o-ship"
+            wx:if="{{item.status === 'PAID_UNSHIPPED'}}"
+            catchtap="onShip"
+            data-id="{{item.id}}"
+          >模拟发货</view>
+        </view>
+      </view>
+    </view>
+  </state-view>
+</view>

@@ -1,0 +1,81 @@
+<view class="mine">
+  <block wx:if="{{needLogin}}">
+    <view class="needlogin">
+      <text class="needlogin-tip">登录后查看会员中心</text>
+      <view class="btn-primary needlogin-btn" bindtap="goLogin" hover-class="btn-primary-hover">去登录</view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="header">
+      <state-view status="{{profileStatus}}" empty-text="暂无用户信息" bind:retry="loadProfile">
+        <view class="header-inner">
+          <view class="user-row">
+            <goods-image src="{{user.avatar}}" customClass="gi-avatar"></goods-image>
+            <view class="user-meta">
+              <text class="nickname">{{user.nickname}}</text>
+              <text class="member">普通会员</text>
+            </view>
+          </view>
+          <view class="stats">
+            <view class="stat">
+              <text class="stat-num">{{balanceText}}</text>
+              <text class="stat-label">余额</text>
+            </view>
+            <view class="stat">
+              <text class="stat-num">{{points}}</text>
+              <text class="stat-label">积分</text>
+            </view>
+            <view class="stat">
+              <text class="stat-num">{{coupons}}</text>
+              <text class="stat-label">优惠券</text>
+            </view>
+          </view>
+        </view>
+      </state-view>
+    </view>
+
+    <view class="card order-card">
+      <view class="card-head">
+        <text class="card-title">我的订单</text>
+        <text class="card-link" bindtap="goOrders" data-status="">查看全部 ></text>
+      </view>
+      <view class="order-quick">
+        <view class="quick" bindtap="goOrders" data-status="PAID_UNSHIPPED">
+          <text class="quick-icon">📦</text>
+          <text class="quick-label">未发货</text>
+        </view>
+        <view class="quick" bindtap="goOrders" data-status="SHIPPED">
+          <text class="quick-icon">🚚</text>
+          <text class="quick-label">已发货</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="card tool-card">
+      <text class="card-title">常用工具</text>
+      <view class="tools">
+        <view class="tool" bindtap="goCart"><text class="tool-icon">🛒</text><text class="tool-label">我的购物车</text></view>
+        <view class="tool" bindtap="goRecharge"><text class="tool-icon">💰</text><text class="tool-label">余额充值</text></view>
+        <view class="tool" bindtap="goContact"><text class="tool-icon">☎️</text><text class="tool-label">联系客服</text></view>
+        <view class="tool" bindtap="onService"><text class="tool-icon">🎧</text><text class="tool-label">在线客服</text></view>
+        <view class="tool" bindtap="onLogout"><text class="tool-icon">🚪</text><text class="tool-label">退出登录</text></view>
+      </view>
+    </view>
+
+    <view class="card recent-card" wx:if="{{recent.length}}">
+      <text class="card-title">最近浏览</text>
+      <scroll-view class="recent-scroll" scroll-x>
+        <view class="recent-item" wx:for="{{recent}}" wx:key="id" data-id="{{item.id}}" bindtap="onRecentTap">
+          <goods-image src="{{item.images[0]}}" customClass="gi-thumb"></goods-image>
+          <text class="recent-title">{{item.title}}</text>
+        </view>
+      </scroll-view>
+    </view>
+  </block>
+
+  <view class="dev-bar">
+    <text class="dev-label">开发者：模拟接口失败</text>
+    <switch checked="{{mockFail}}" bindchange="onMockFailChange" color="#F0413E" />
+  </view>
+</view>

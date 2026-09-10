@@ -1,0 +1,30 @@
+<view class="login">
+  <view class="login-hero">
+    <text class="login-title">欢迎使用商城系统</text>
+    <text class="login-sub">{{mode === 'login' ? '推荐使用手机号密码登录' : '注册后即可下单购买'}}</text>
+  </view>
+
+  <view class="login-form">
+    <view class="field">
+      <text class="field-label">手机号</text>
+      <input class="field-input" type="number" maxlength="11" placeholder="请输入手机号" value="{{phone}}" bindinput="onPhone" />
+    </view>
+    <view class="field">
+      <text class="field-label">密码</text>
+      <input class="field-input" password placeholder="请输入密码(至少6位)" value="{{password}}" bindinput="onPassword" />
+    </view>
+    <view class="field" wx:if="{{mode === 'register'}}">
+      <text class="field-label">昵称</text>
+      <input class="field-input" placeholder="选填，默认宠友+尾号" value="{{nickname}}" bindinput="onNickname" />
+    </view>
+
+    <view class="btn-primary login-btn" bindtap="onSubmit" hover-class="btn-primary-hover">
+      {{mode === 'login' ? '登录' : '注册并登录'}}
+    </view>
+
+    <view class="login-toggle" bindtap="toggleMode">
+      {{mode === 'login' ? '没有账号？去注册' : '已有账号？去登录'}}
+    </view>
+    <view class="login-skip" bindtap="onSkip">暂不登录</view>
+  </view>
+</view>

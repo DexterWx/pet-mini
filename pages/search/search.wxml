@@ -1,0 +1,37 @@
+<view class="search">
+  <view class="search-bar-row">
+    <search-bar
+      value="{{keyword}}"
+      placeholder="搜索感兴趣的商品"
+      bind:input="onInput"
+      bind:confirm="onConfirm"
+      bind:clear="onClear"
+    ></search-bar>
+    <view class="search-btn" bindtap="doSearch" hover-class="search-btn-hover">搜索</view>
+  </view>
+
+  <block wx:if="{{resultStatus === 'idle'}}">
+    <view class="history" wx:if="{{history.length}}">
+      <view class="history-head">
+        <text class="history-title">最近搜索</text>
+        <text class="history-clear" bindtap="onClearHistory">🗑</text>
+      </view>
+      <view class="history-tags">
+        <view class="tag" wx:for="{{history}}" wx:key="*this" data-kw="{{item}}" bindtap="onHistoryTap">{{item}}</view>
+      </view>
+    </view>
+    <view class="history-empty" wx:else>
+      <text>暂无搜索记录</text>
+    </view>
+  </block>
+
+  <block wx:else>
+    <state-view status="{{resultStatus}}" empty-text="没有找到相关商品" bind:retry="doSearch">
+      <view class="grid-2 result-grid">
+        <view class="grid-item" wx:for="{{results}}" wx:key="id">
+          <goods-card goods="{{item}}" layout="grid" bind:cardtap="onCardTap" bind:cardadd="onCardAdd"></goods-card>
+        </view>
+      </view>
+    </state-view>
+  </block>
+</view>

@@ -1,0 +1,106 @@
+.recharge {
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding: 24rpx;
+}
+
+.r-balance {
+  background: linear-gradient(135deg, #F4574D, #F0413E);
+  border-radius: var(--radius-lg);
+  padding: 48rpx 40rpx;
+}
+
+.r-balance-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.r-balance-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 28rpx;
+}
+
+.r-records {
+  color: #fff;
+  font-size: 24rpx;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8rpx 24rpx;
+  border-radius: 999rpx;
+}
+
+.r-balance-num {
+  display: block;
+  color: #fff;
+  font-size: 64rpx;
+  font-weight: 700;
+  margin-top: 32rpx;
+}
+
+.r-card {
+  margin-top: 32rpx;
+}
+
+.r-label {
+  color: var(--color-text-sub);
+  font-size: 26rpx;
+}
+
+.r-input-row {
+  display: flex;
+  align-items: center;
+  margin-top: 24rpx;
+}
+
+.r-yuan {
+  font-size: 44rpx;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-right: 16rpx;
+}
+
+.r-input {
+  flex: 1;
+  font-size: 40rpx;
+}
+
+.r-tiers {
+  display: flex;
+  margin-top: 32rpx;
+}
+
+.r-tier {
+  flex: 1;
+  background: var(--color-primary-light);
+  border-radius: var(--radius);
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20rpx;
+}
+
+.r-tier:last-child {
+  margin-right: 0;
+}
+
+.r-tier-label {
+  font-size: 30rpx;
+  color: var(--color-text);
+}
+
+.r-tier-sub {
+  font-size: 24rpx;
+  color: var(--color-text-sub);
+  margin-top: 8rpx;
+}
+
+.r-gift {
+  margin-top: 24rpx;
+  color: var(--color-primary);
+  font-size: 26rpx;
+}
+
+.r-pay {
+  margin-top: 48rpx;
+}

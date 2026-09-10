@@ -1,0 +1,20 @@
+/* assets/styles/theme.wxss
+   主题变量：业务代码通过 var(--x) 引用，后期换肤/换资源只改这里。 */
+page {
+  --color-primary: #F0413E;
+  --color-primary-light: #FDECEB;
+  --color-text: #333333;
+  --color-text-sub: #999999;
+  --color-bg: #F6F6F6;
+  --color-card: #FFFFFF;
+  --color-border: #EEEEEE;
+
+  /* 首页米色系 */
+  --color-home-bg: #F5EFE0;
+  --color-home-tan: #C8A882;
+  --color-home-yellow: #E9C250;
+
+  --radius-sm: 8rpx;
+  --radius: 16rpx;
+  --radius-lg: 24rpx;
+}

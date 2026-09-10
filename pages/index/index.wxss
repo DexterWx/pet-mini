@@ -1,0 +1,120 @@
+.home {
+  min-height: 100vh;
+  background: var(--color-home-bg);
+  padding-bottom: 40rpx;
+}
+
+.home-search {
+  padding: 16rpx 24rpx;
+}
+
+.home-top {
+  padding: 0 24rpx;
+}
+
+.banner {
+  height: 320rpx;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.banner-img {
+  width: 100%;
+  height: 320rpx;
+  border-radius: var(--radius-lg);
+}
+
+.squares {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 32rpx;
+}
+
+.square {
+  width: 48.5%;
+  background: var(--color-home-tan);
+  border-radius: var(--radius-lg);
+  padding: 40rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.square-hover {
+  opacity: 0.9;
+}
+
+.square-icon {
+  font-size: 72rpx;
+}
+
+.square-title {
+  margin-top: 16rpx;
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #4A3524;
+}
+
+.square-sub {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #6B4E33;
+}
+
+.promos {
+  margin-top: 32rpx;
+}
+
+.promo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius);
+  padding: 28rpx 32rpx;
+  margin-bottom: 24rpx;
+}
+
+.promo-hover {
+  opacity: 0.9;
+}
+
+.promo-contact {
+  background: var(--color-home-yellow);
+}
+
+.promo-recharge {
+  background: var(--color-home-tan);
+}
+
+.promo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.promo-title {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #4A3524;
+}
+
+.promo-sub {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  letter-spacing: 2rpx;
+  color: #6B4E33;
+}
+
+.promo-icon {
+  font-size: 56rpx;
+}
+
+.rec-header {
+  text-align: center;
+  color: #8A7358;
+  font-size: 26rpx;
+  margin: 40rpx 0 24rpx;
+}
+
+.rec-grid {
+  padding: 0 24rpx;
+}

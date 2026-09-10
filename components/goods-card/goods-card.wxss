@@ -1,0 +1,101 @@
+.gc {
+  background: var(--color-card, #fff);
+  border-radius: var(--radius, 16rpx);
+  overflow: hidden;
+}
+
+.gc-hover {
+  opacity: 0.9;
+}
+
+/* 网格布局：上图下文 */
+.gc-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.gc-img-grid {
+  width: 100%;
+  height: 340rpx;
+}
+
+/* 列表布局：左图右文 */
+.gc-list {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  padding: 16rpx;
+}
+
+.gc-img-list {
+  width: 180rpx;
+  height: 180rpx;
+  border-radius: var(--radius-sm, 8rpx);
+  flex-shrink: 0;
+}
+
+.gc-list .gc-info {
+  flex: 1;
+  margin-left: 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.gc-imgwrap {
+  display: block;
+}
+
+.gc-info {
+  padding: 16rpx;
+}
+
+.gc-list .gc-info {
+  padding: 0;
+}
+
+.gc-title {
+  font-size: 28rpx;
+  color: var(--color-text, #333);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.gc-price-row {
+  margin-top: 12rpx;
+}
+
+.gc-price {
+  color: var(--color-primary, #F0413E);
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.gc-meta-row {
+  margin-top: 8rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gc-sold {
+  color: var(--color-text-sub, #999);
+  font-size: 24rpx;
+}
+
+.gc-add {
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: 50%;
+  background: var(--color-primary-light, #FDECEB);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+}
+
+.gc-add-hover {
+  opacity: 0.8;
+}

@@ -1,0 +1,13 @@
+<view class="gi {{customClass}}">
+  <image
+    wx:if="{{src && !failed}}"
+    class="gi-img"
+    src="{{src}}"
+    mode="{{mode}}"
+    lazy-load
+    binderror="onError"
+  ></image>
+  <view wx:else class="ph ph-img gi-img">
+    <text class="ph-emoji">🐾</text>
+  </view>
+</view>

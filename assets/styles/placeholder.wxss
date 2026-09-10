@@ -1,0 +1,25 @@
+/* assets/styles/placeholder.wxss
+   纯色 / CSS 占位资源：正式 UI 资源到位后直接替换本文件或对应节点。 */
+.ph {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #EFE7DA;
+  color: #B9A98F;
+}
+
+/* 图片占位：米色渐变 + 爪印 */
+.ph-img {
+  background: linear-gradient(135deg, #F3EAD9, #E4D5BC);
+}
+
+.ph-emoji {
+  font-size: 56rpx;
+}
+
+/* 圆形图标占位 */
+.ph-circle {
+  border-radius: 50%;
+  background: #F0EAE0;
+  color: #C9BBA4;
+}

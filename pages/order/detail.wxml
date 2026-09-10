@@ -1,0 +1,35 @@
+<state-view status="{{status}}" empty-text="订单不存在" bind:retry="load">
+  <view class="odetail">
+    <view class="od-status">{{order.statusText}}</view>
+
+    <view class="card od-card">
+      <view class="od-row"><text class="od-label">订单号</text><text class="od-value">{{order.orderNo}}</text></view>
+      <view class="od-row"><text class="od-label">下单时间</text><text class="od-value">{{order.timeText}}</text></view>
+      <view class="od-row" wx:if="{{order.shipTimeText}}"><text class="od-label">发货时间</text><text class="od-value">{{order.shipTimeText}}</text></view>
+    </view>
+
+    <view class="card od-card">
+      <view class="od-line" wx:for="{{order.items}}" wx:key="productId">
+        <goods-image src="{{item.image}}" customClass="gi-mid"></goods-image>
+        <view class="od-info">
+          <text class="od-title">{{item.title}}</text>
+          <view class="od-row2">
+            <text class="od-price">¥{{item.priceText}}</text>
+            <text class="od-qty">x{{item.qty}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="od-total">
+        <text>合计</text>
+        <text class="od-total-num">¥{{order.totalText}}</text>
+      </view>
+    </view>
+
+    <view
+      class="btn-primary od-ship"
+      wx:if="{{order.status === 'PAID_UNSHIPPED'}}"
+      bindtap="onShip"
+      hover-class="btn-primary-hover"
+    >模拟发货（Demo）</view>
+  </view>
+</state-view>

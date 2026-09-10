@@ -1,0 +1,27 @@
+<view class="state-view">
+  <block wx:if="{{status === 'loading'}}">
+    <view class="sv-center">
+      <view class="sv-spinner"></view>
+      <text class="sv-tip">{{loadingText}}</text>
+    </view>
+  </block>
+
+  <block wx:elif="{{status === 'error'}}">
+    <view class="sv-center">
+      <view class="ph ph-circle sv-icon">!</view>
+      <text class="sv-tip">{{errorText}}</text>
+      <view class="sv-btn" bindtap="retry" hover-class="sv-btn-hover">重试</view>
+    </view>
+  </block>
+
+  <block wx:elif="{{status === 'empty'}}">
+    <view class="sv-center">
+      <view class="ph ph-circle sv-icon">🐾</view>
+      <text class="sv-tip">{{emptyText}}</text>
+    </view>
+  </block>
+
+  <block wx:else>
+    <slot></slot>
+  </block>
+</view>

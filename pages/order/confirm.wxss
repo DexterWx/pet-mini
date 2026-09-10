@@ -1,0 +1,72 @@
+.confirm {
+  padding: 24rpx;
+}
+
+.c-line {
+  display: flex;
+  background: var(--color-card);
+  border-radius: var(--radius);
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.c-img {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.c-info {
+  flex: 1;
+  margin-left: 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.c-title {
+  font-size: 28rpx;
+  color: var(--color-text);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.c-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.c-price {
+  color: var(--color-primary);
+  font-size: 32rpx;
+  font-weight: 600;
+}
+
+.c-qty {
+  color: var(--color-text-sub);
+  font-size: 26rpx;
+}
+
+.c-total {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 24rpx;
+  color: var(--color-text);
+  font-size: 28rpx;
+}
+
+.c-total-num {
+  color: var(--color-primary);
+  font-size: 40rpx;
+  font-weight: 700;
+  margin-left: 16rpx;
+}
+
+.c-submit {
+  margin-top: 40rpx;
+}

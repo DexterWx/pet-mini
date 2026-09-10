@@ -1,0 +1,33 @@
+<view class="detail-wrap">
+  <state-view status="{{status}}" empty-text="商品不存在或已下架" bind:retry="load">
+    <view class="detail">
+      <view class="d-swiper-wrap">
+        <swiper class="d-swiper" bindchange="onSwiperChange" circular>
+          <swiper-item wx:for="{{goods.images}}" wx:key="*this">
+            <goods-image src="{{item}}" customClass="gi-tall" mode="aspectFill"></goods-image>
+          </swiper-item>
+        </swiper>
+        <view class="d-count">{{currentImg + 1}}/{{goods.images.length}}</view>
+      </view>
+
+      <view class="d-info">
+        <text class="d-price">¥{{priceText}}</text>
+        <text class="d-title">{{goods.title}}</text>
+        <text class="d-desc">{{goods.desc}}</text>
+        <view class="d-meta">
+          <text>库存 {{goods.stock}}</text>
+          <text>已售 {{goods.sold}}件</text>
+          <text wx:if="{{goods.categoryName}}">{{goods.categoryName}}</text>
+        </view>
+      </view>
+    </view>
+  </state-view>
+
+  <view class="d-bar" wx:if="{{status === 'ok'}}">
+    <view class="d-bar-icon" bindtap="onService"><text class="d-bar-emoji">🎧</text><text class="d-bar-label">客服</text></view>
+    <view class="d-bar-icon" bindtap="goCart"><text class="d-bar-emoji">🛒</text><text class="d-bar-label">购物车</text></view>
+    <view class="d-bar-icon {{favorited ? 'on' : ''}}" bindtap="onFavorite"><text class="d-bar-emoji">{{favorited ? '❤️' : '🤍'}}</text><text class="d-bar-label">收藏</text></view>
+    <view class="d-bar-btn add" bindtap="onAddCart" hover-class="d-bar-btn-hover">加入购物车</view>
+    <view class="d-bar-btn buy" bindtap="onBuy" hover-class="d-bar-btn-hover">立即购买</view>
+  </view>
+</view>

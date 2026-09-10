@@ -1,0 +1,15 @@
+<view class="sb" bindtap="onTap">
+  <view class="sb-icon">🔍</view>
+  <input
+    wx:if="{{!readonly}}"
+    class="sb-input"
+    value="{{value}}"
+    placeholder="{{placeholder}}"
+    confirm-type="search"
+    bindinput="onInput"
+    bindconfirm="onConfirm"
+  />
+  <text wx:else class="sb-ph">{{placeholder}}</text>
+  <view wx:if="{{!readonly && value}}" class="sb-clear" catchtap="onClear">×</view>
+  <slot name="right"></slot>
+</view>

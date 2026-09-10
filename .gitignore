@@ -1,0 +1,34 @@
+# ===== 依赖与构建产物 =====
+node_modules/
+# 微信小程序 npm 构建目录（由开发者工具「构建 npm」生成）
+miniprogram_npm/
+
+# ===== 微信开发者工具：个人本地配置 =====
+# 每位开发者本地的私有设置（urlCheck / 热重载等），不应影响他人，官方建议忽略。
+# 注意：project.config.json 是团队共享配置，需保留跟踪，不要忽略。
+project.private.config.json
+
+# ===== 日志与临时文件 =====
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+tmp/
+temp/
+
+# ===== 编辑器 / IDE =====
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ===== macOS =====
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ===== Windows =====
+Thumbs.db
+ehthumbs.db
+Desktop.ini

@@ -1,0 +1,95 @@
+.odetail {
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding: 24rpx;
+}
+
+.od-status {
+  background: linear-gradient(135deg, #F4574D, #F0413E);
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: 600;
+  border-radius: var(--radius);
+  padding: 40rpx 32rpx;
+}
+
+.od-card {
+  margin-top: 24rpx;
+}
+
+.od-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12rpx 0;
+}
+
+.od-label {
+  color: var(--color-text-sub);
+  font-size: 26rpx;
+}
+
+.od-value {
+  color: var(--color-text);
+  font-size: 26rpx;
+}
+
+.od-line {
+  display: flex;
+  padding: 16rpx 0;
+}
+
+.od-img {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.od-info {
+  flex: 1;
+  margin-left: 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.od-title {
+  font-size: 28rpx;
+  color: var(--color-text);
+}
+
+.od-row2 {
+  display: flex;
+  justify-content: space-between;
+}
+
+.od-price {
+  color: var(--color-primary);
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.od-qty {
+  color: var(--color-text-sub);
+  font-size: 26rpx;
+}
+
+.od-total {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 2rpx solid var(--color-border);
+  font-size: 28rpx;
+}
+
+.od-total-num {
+  color: var(--color-primary);
+  font-size: 36rpx;
+  font-weight: 700;
+  margin-left: 16rpx;
+}
+
+.od-ship {
+  margin-top: 40rpx;
+}

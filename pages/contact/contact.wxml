@@ -1,0 +1,28 @@
+<state-view status="{{status}}" empty-text="暂无联系信息" bind:retry="load">
+  <view class="contact">
+    <view class="c-hero">
+      <text class="c-hero-icon">☎️</text>
+      <text class="c-hero-title">联系我们</text>
+      <text class="c-hero-sub">CONTACT US</text>
+    </view>
+
+    <view class="card c-card">
+      <view class="c-row" bindtap="onCall">
+        <text class="c-label">客服电话</text>
+        <text class="c-value">{{info.phone}}</text>
+      </view>
+      <view class="c-row">
+        <text class="c-label">微信号</text>
+        <text class="c-value">{{info.wechat}}</text>
+      </view>
+      <view class="c-row">
+        <text class="c-label">服务时间</text>
+        <text class="c-value">{{info.hours}}</text>
+      </view>
+    </view>
+
+    <view class="c-notice">{{info.notice}}</view>
+
+    <view class="btn-primary c-service" bindtap="onService" hover-class="btn-primary-hover">在线客服（占位）</view>
+  </view>
+</state-view>

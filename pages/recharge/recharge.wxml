@@ -1,0 +1,34 @@
+<view class="recharge">
+  <state-view status="{{status}}" empty-text="暂无充值信息" bind:retry="load">
+    <view class="r-balance">
+      <view class="r-balance-head">
+        <text class="r-balance-label">我的余额</text>
+        <text class="r-records" bindtap="onRecords">充值记录 ></text>
+      </view>
+      <text class="r-balance-num">¥{{balanceText}}</text>
+    </view>
+
+    <view class="card r-card">
+      <text class="r-label">充值金额(元)</text>
+      <view class="r-input-row">
+        <text class="r-yuan">¥</text>
+        <input class="r-input" type="digit" placeholder="请输入充值金额" value="{{amount}}" bindinput="onAmount" />
+      </view>
+      <view class="r-tiers">
+        <view
+          class="r-tier"
+          wx:for="{{tiers}}"
+          wx:key="thresholdFen"
+          data-threshold="{{item.thresholdFen}}"
+          bindtap="onTier"
+        >
+          <text class="r-tier-label">{{item.label}}</text>
+          <text class="r-tier-sub">{{item.sub}}</text>
+        </view>
+      </view>
+      <view class="r-gift" wx:if="{{giftText !== '0'}}">预计赠送 ¥{{giftText}}</view>
+    </view>
+
+    <view class="btn-primary r-pay" bindtap="onPay" hover-class="btn-primary-hover">去支付</view>
+  </state-view>
+</view>

@@ -1,0 +1,10 @@
+{
+  "navigationBarTitleText": "蛋黄宠物烘焙",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "search-bar": "/components/search-bar/search-bar",
+    "state-view": "/components/state-view/state-view",
+    "goods-card": "/components/goods-card/goods-card",
+    "goods-image": "/components/goods-image/goods-image"
+  }
+}

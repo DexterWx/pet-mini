@@ -1,0 +1,21 @@
+<state-view status="{{status}}" empty-text="订单商品无效" bind:retry="load">
+  <view class="confirm">
+    <view class="c-line" wx:for="{{lines}}" wx:key="productId">
+      <goods-image src="{{item.image}}" customClass="gi-thumb"></goods-image>
+      <view class="c-info">
+        <text class="c-title">{{item.title}}</text>
+        <view class="c-row">
+          <text class="c-price">¥{{item.priceText}}</text>
+          <text class="c-qty">x{{item.qty}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="c-total">
+      <text>合计</text>
+      <text class="c-total-num">¥{{totalText}}</text>
+    </view>
+
+    <view class="btn-primary c-submit" bindtap="onSubmit" hover-class="btn-primary-hover">提交订单并支付</view>
+  </view>
+</state-view>

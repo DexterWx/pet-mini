@@ -1,0 +1,13 @@
+<view class="gc gc-{{layout}}" bindtap="onTap" hover-class="gc-hover">
+  <goods-image src="{{image}}" customClass="{{layout === 'grid' ? 'gi-grid' : 'gi-list'}}"></goods-image>
+  <view class="gc-info">
+    <text class="gc-title">{{goods.title}}</text>
+    <view class="gc-price-row">
+      <text class="gc-price">¥{{priceText}}</text>
+    </view>
+    <view class="gc-meta-row">
+      <text class="gc-sold">已售{{goods.sold}}件</text>
+      <view class="gc-add" catchtap="onAdd" hover-class="gc-add-hover">🛒</view>
+    </view>
+  </view>
+</view>
