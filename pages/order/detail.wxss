@@ -90,6 +90,35 @@
   margin-left: 16rpx;
 }
 
-.od-ship {
+.od-actions {
   margin-top: 40rpx;
+  display: flex;
+  flex-direction: column;
+}
+
+.od-btn {
+  border-radius: 999rpx;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 30rpx;
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+
+.od-btn:last-child {
+  margin-bottom: 0;
+}
+
+.od-btn-outline {
+  color: var(--color-primary);
+  border: 2rpx solid var(--color-primary);
+}
+
+.od-btn-ghost {
+  color: var(--color-text-sub);
+  border: 2rpx solid var(--color-border);
+}
+
+.od-btn-hover {
+  opacity: 0.7;
 }

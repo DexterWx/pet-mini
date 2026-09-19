@@ -4,11 +4,11 @@
 const config = {
   env: 'dev',
 
-  // 真实后端地址（useMock = false 时启用）
-  baseURL: 'https://api.example.com',
+  // 真实后端地址（useMock = false 时启用）；本地联调需在开发者工具勾选「不校验合法域名」
+  baseURL: 'http://127.0.0.1:8000/api/v1/client',
 
-  // Demo 阶段使用 Mock API
-  useMock: true,
+  // Demo 阶段使用 Mock API；联调 pet-back 时置为 false
+  useMock: false,
 
   mock: {
     // 模拟网络延迟区间(ms)
@@ -34,22 +34,39 @@ const config = {
     prefix: 'petstore:',
     token: 'auth.token',
     user: 'auth.user',
+    // 首次登录采集到的头像昵称（按用户 id 隔离，退出登录不清除，之后直接使用不再重复请求）
+    profile: 'auth.profile',
     searchHistory: 'ux.searchHistory',
     recentViewed: 'ux.recentViewed',
     mockFail: 'dev.mockFail',
     db: 'mock.db',
   },
 
-  // 简化订单状态：已付款未发货 -> 已发货
+  // 订单状态机：
+  //   PAID_UNSHIPPED 已付款未发货
+  //     -> REFUND_REQUESTED 用户申请退款(待商家确认)，用户可撤回到 PAID_UNSHIPPED
+  //     -> CANCELLED 商家同意退款/直接取消(终态，Mock 无真实资金流)
+  //     -> SHIPPED 已发货(不可取消)
+  //   REFUNDING/REFUNDED 为接入真实支付后预留：CANCELLED -> REFUNDING -> REFUNDED
   orderStatus: {
     PAID_UNSHIPPED: 'PAID_UNSHIPPED',
+    REFUND_REQUESTED: 'REFUND_REQUESTED',
+    CANCELLED: 'CANCELLED',
     SHIPPED: 'SHIPPED',
+    // 接入支付后启用：
+    REFUNDING: 'REFUNDING',
+    REFUNDED: 'REFUNDED',
   },
   orderStatusText: {
     PAID_UNSHIPPED: '已付款，未发货',
+    REFUND_REQUESTED: '退款申请中',
+    CANCELLED: '已取消',
     SHIPPED: '已发货',
+    // 接入支付后启用：
+    REFUNDING: '退款中',
+    REFUNDED: '已退款',
   },
-  // 订单列表 tab
+  // 订单列表 tab（key 保持不变；“未发货”在 Mock 层按分组匹配 PAID_UNSHIPPED + REFUND_REQUESTED）
   orderTabs: [
     { key: '', label: '全部' },
     { key: 'PAID_UNSHIPPED', label: '未发货' },

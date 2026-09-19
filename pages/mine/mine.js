@@ -37,7 +37,19 @@ Page({
   },
 
   loadProfile () {
-    this.setData({ profileStatus: 'loading' })
+    // 首屏直接用本地快照/头像昵称缓存渲染（首次登录已采集），无需等待接口；余额等数值仍以接口为准
+    const cached = authService.getCachedUser() || authService.getCachedProfile()
+    if (cached && (cached.nickname || cached.avatar)) {
+      this.setData({
+        user: { nickname: cached.nickname || '', avatar: cached.avatar || '' },
+        balanceText: '—',
+        points: '—',
+        coupons: '—',
+        profileStatus: 'ok',
+      })
+    } else {
+      this.setData({ profileStatus: 'loading' })
+    }
     Promise.all([authService.fetchProfile(), userService.getBalance()]).then(([user, balance]) => {
       this.setData({
         user,
@@ -60,6 +72,10 @@ Page({
     Promise.all(ids.map(id => productService.getDetail(id).catch(() => null)))
       .then(list => this.setData({ recent: list.filter(Boolean) }))
       .catch(() => this.setData({ recent: [] }))
+  },
+
+  goProfile () {
+    router.navigate('/pages/profile/profile')
   },
 
   goOrders (e) {

@@ -1,30 +1,58 @@
 <view class="login">
-  <view class="login-hero">
-    <text class="login-title">欢迎使用商城系统</text>
-    <text class="login-sub">{{mode === 'login' ? '推荐使用手机号密码登录' : '注册后即可下单购买'}}</text>
-  </view>
-
-  <view class="login-form">
-    <view class="field">
-      <text class="field-label">手机号</text>
-      <input class="field-input" type="number" maxlength="11" placeholder="请输入手机号" value="{{phone}}" bindinput="onPhone" />
-    </view>
-    <view class="field">
-      <text class="field-label">密码</text>
-      <input class="field-input" password placeholder="请输入密码(至少6位)" value="{{password}}" bindinput="onPassword" />
-    </view>
-    <view class="field" wx:if="{{mode === 'register'}}">
-      <text class="field-label">昵称</text>
-      <input class="field-input" placeholder="选填，默认宠友+尾号" value="{{nickname}}" bindinput="onNickname" />
+  <block wx:if="{{step === 'login'}}">
+    <view class="login-hero">
+      <text class="login-title">欢迎使用商城系统</text>
+      <text class="login-sub">微信一键登录，安全便捷</text>
     </view>
 
-    <view class="btn-primary login-btn" bindtap="onSubmit" hover-class="btn-primary-hover">
-      {{mode === 'login' ? '登录' : '注册并登录'}}
+    <view class="login-form">
+      <view
+        class="btn-primary login-btn {{logging ? 'login-btn-disabled' : ''}}"
+        bindtap="onWechatLogin"
+        hover-class="btn-primary-hover"
+      >{{logging ? '登录中…' : '微信一键登录'}}</view>
+
+      <view class="login-tip">登录即表示同意《用户协议》与《隐私政策》</view>
+      <view class="login-skip" bindtap="onSkip">暂不登录</view>
+    </view>
+  </block>
+
+  <!-- 首次登录：仅这一次请求头像昵称授权，之后登录与展示直接使用缓存 -->
+  <block wx:else>
+    <view class="login-hero login-hero-tight">
+      <text class="login-title">设置头像和昵称</text>
+      <text class="login-sub">只需设置这一次，之后自动使用，不再重复询问</text>
     </view>
 
-    <view class="login-toggle" bindtap="toggleMode">
-      {{mode === 'login' ? '没有账号？去注册' : '已有账号？去登录'}}
+    <view class="login-form">
+      <view class="lp-row">
+        <text class="lp-label">头像</text>
+        <button class="lp-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <goods-image src="{{avatar}}" customClass="gi-avatar"></goods-image>
+        </button>
+      </view>
+
+      <view class="lp-row">
+        <text class="lp-label">昵称</text>
+        <input
+          class="lp-input"
+          type="nickname"
+          placeholder="点击填写或使用微信昵称"
+          value="{{nickname}}"
+          bindinput="onNickname"
+          bindblur="onNickname"
+          bindchange="onNickname"
+        />
+      </view>
+
+      <view class="lp-hint">微信已不支持静默获取用户资料，需你主动点击一次授权填写；也可暂不设置，之后在「我的 - 编辑资料」中修改。</view>
+
+      <view
+        class="btn-primary lp-submit {{saving ? 'lp-disabled' : ''}}"
+        bindtap="onProfileSubmit"
+        hover-class="btn-primary-hover"
+      >{{saving ? '保存中…' : '使用微信头像和昵称'}}</view>
+      <view class="login-skip" bindtap="onProfileSkip">暂不设置</view>
     </view>
-    <view class="login-skip" bindtap="onSkip">暂不登录</view>
-  </view>
+  </block>
 </view>

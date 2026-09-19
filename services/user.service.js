@@ -4,6 +4,12 @@ const { request } = require('../utils/request')
 const storage = require('../utils/storage')
 const config = require('../config/index')
 
+// 更新当前用户资料（昵称/头像）；成功后同步刷新本地用户快照
+function updateProfile (data) {
+  return request({ url: '/user/profile', method: 'POST', auth: true, loading: true, data })
+    .then(user => { storage.set(config.storageKeys.user, user); return user })
+}
+
 function getBalance () {
   return request({ url: '/user/balance', auth: true })
 }
@@ -35,4 +41,4 @@ function addRecentViewed (productId) {
   storage.set(config.storageKeys.recentViewed, ids.slice(0, 20))
 }
 
-module.exports = { getBalance, getRechargeTiers, recharge, getFavorites, toggleFavorite, getRecentViewed, addRecentViewed }
+module.exports = { updateProfile, getBalance, getRechargeTiers, recharge, getFavorites, toggleFavorite, getRecentViewed, addRecentViewed }

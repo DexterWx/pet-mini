@@ -39,7 +39,7 @@ pet-mini/
     index/ category/ cart/ mine/    tabBar 四页
     search/ goods/detail/           浏览页（未登录可看）
     order/confirm|list|detail/      订单与支付
-    login/ recharge/ contact/       登录、充值、客服占位
+    login/ profile/ recharge/ contact/  登录、编辑资料、充值、客服占位
 ```
 
 ## 3. 分层与数据流（核心约束）
@@ -53,13 +53,15 @@ pages  →  services  →  utils/request  →  (config.useMock ? mock/server : w
 - **request 层**根据 `config.useMock` 选择 Mock 或真实 `wx.request`；统一返回 `Promise<data>`，失败 reject `ApiError{code,message}`。
 - 替换点（接真实能力时只改对应文件，页面零改动）：
   - 真实后端：`config.useMock=false` + `config.baseURL`（或改 `request.js` 传输适配）。
-  - 真实认证/短信/微信授权：`services/auth.service.js`。
+  - 真实认证（微信登录 code2Session）：`services/auth.service.js` + 后端 `/auth/wechat-login`。
   - 微信支付：`services/payment.service.js`。
   - 微信客服：`services/contact.service.js`。
 
 ## 4. 认证与登录态
 
-- Mock 登录/注册：手机号 + 密码（`/auth/login`、`/auth/register`），成功后服务端生成 Token 并**每次登录轮换**。
+- 微信一键登录（**无独立注册流程**）：`auth.service.login()` 调 `wx.login` 拿临时 `code` → POST `/auth/wechat-login`；后端用 code 换 openid（`code2Session`），按 openid 找/建用户（存在即登录，不存在则注册并登录），返回 Token + 用户快照。Mock 用固定 openid 模拟单一微信身份，每次登录轮换 Token。
+- 头像昵称（**仅首次登录请求一次授权**）：微信已取消静默获取（`getUserProfile` 只返回匿名“微信用户”+灰头像），真实资料必须靠“头像昵称填写能力”由用户主动点一次。因此 `pages/login` 在登录成功后判 `authService.profileSetupNeeded(user)`：为 true（首次）才展示采集卡片（`<button open-type="chooseAvatar">` + `<input type="nickname">`），保存走 `userService.updateProfile()` → POST `/user/profile`，并写本地缓存 `auth.profile`（`{userId,nickname,avatar,skipped}`，按用户隔离、**退出登录不清**）。此后登录判据：服务端快照资料已完整 → 刷新缓存后直接使用；否则本地已有缓存/曾选“暂不设置”(`skipped`) → 也直接使用，**不再重复请求授权**。`pages/profile`（“我的”页头部进入）作为后续修改入口，修改后同步刷新缓存。
+- 头像为 `chooseAvatar` 返回的临时文件路径，真实环境需先 `wx.uploadFile` 上传换取正式 URL 再入库/缓存。
 - Token 存 `storage`（key `auth.token`），用户快照存 `auth.user`（仅首屏展示，权威以 `fetchProfile` 为准）。
 - `request` 对所有请求自动附带 Token；Mock 对受保护路径（`/cart`、`/orders`、`/user`、`/auth/profile`）校验，无效返回 **401**。
 - request 层收到 401：清除 token/user 并跳转登录页（已在登录页则不跳）。
@@ -68,24 +70,29 @@ pages  →  services  →  utils/request  →  (config.useMock ? mock/server : w
 ### 路由访问矩阵
 | 未登录可看 | 需登录 |
 |---|---|
-| 首页、分类、搜索、商品详情 | 购物车、确认订单、订单列表/详情、我的、充值、收藏操作 |
+| 首页、分类、搜索、商品详情 | 购物车、确认订单、订单列表/详情、我的、编辑资料、充值、收藏操作 |
 
-## 5. 订单与支付模型（简化）
+## 5. 订单与支付模型
 
-- 订单状态仅两态（`config.orderStatus`）：
+- 订单状态机（`config.orderStatus`）：
   - `PAID_UNSHIPPED` 已付款，未发货
-  - `SHIPPED` 已发货
+  - `REFUND_REQUESTED` 退款申请中（用户已申请，待商家确认）
+  - `CANCELLED` 已取消（商家同意退款/直接取消，终态）
+  - `SHIPPED` 已发货（不可取消）
+  - 预留 `REFUNDING` 退款中 / `REFUNDED` 已退款：**接入真实支付后启用**，流转 `CANCELLED → REFUNDING → REFUNDED`（当前 Mock 无真实资金流，止于 `CANCELLED`）。
 - **订单仅在支付成功后创建**（`order.createPaidOrder`），故无"待付款"脏数据；支付失败/取消不产生订单。
 - 支付：`payment.service.pay()` 返回 `{result:'success'|'fail'|'cancel'}`（Mock 用 ActionSheet 三选一；`config.payment.autoSuccess=true` 可直达成功）。调用方按结果驱动后续（创建订单 / 充值入账 / 提示）。
-- Demo 状态流转：订单列表/详情提供"模拟发货"（`order.ship`）把 `PAID_UNSHIPPED → SHIPPED`。
+- 退款申请（用户侧，仅 `PAID_UNSHIPPED` 可发起）：订单详情"申请退款"（`order.applyRefund`）→ `REFUND_REQUESTED`；"取消退款申请"（`order.revokeRefund`）撤回 → `PAID_UNSHIPPED`。均需二次确认。
+- 取消订单（商家侧）：真实场景由 **web 后台** 处理（`order.merchantCancel` 对应 `POST /orders/:id/cancel`），`PAID_UNSHIPPED`/`REFUND_REQUESTED` → `CANCELLED` 并**回补库存、回退销量**；`SHIPPED` 拒绝。小程序内提供"模拟商家同意退款（Demo）"按钮，沿用"模拟发货（Demo）"约定以便演示。
+- 列表 tab：`未发货` = `PAID_UNSHIPPED + REFUND_REQUESTED`（Mock 层按分组过滤）；`CANCELLED` 仅在 `全部` 可见（"从未发货移除，但全部里能看到状态"）。
 - 下单会扣减商品库存、累加销量，并清空购物车中对应商品。
 
 ## 6. 缓存策略（storage）
 
 - 命名空间前缀 `petstore:`（`utils/storage.js`），值包裹 `{v, e(过期时间)}`。
-- **可持久化**：Token、用户快照、搜索历史(`ux.searchHistory`)、最近浏览(`ux.recentViewed`)、Mock 失败开关(`dev.mockFail`)、Mock 库(`mock.db`)。
+- **可持久化**：Token、用户快照、**头像昵称缓存(`auth.profile`)与“暂不设置”标记**、搜索历史(`ux.searchHistory`)、最近浏览(`ux.recentViewed`)、Mock 失败开关(`dev.mockFail`)、Mock 库(`mock.db`)。
 - **可 TTL 缓存 + 后台刷新(SWR)**：banner、分类（`config.cache.ttl`）。
-- **绝不依赖缓存**：价格、库存、订单、支付、余额 —— 一律实时取 API。商品列表/详情实时拉取（不读缓存）。
+- **绝不依赖缓存**：价格、库存、订单、支付、余额 —— 一律实时取 API。商品列表/详情实时拉取（不读缓存）。“我的”页头部可用缓存头像昵称秒开，但余额/积分/券必须等接口（首屏占位 `—`）。
 - 购物车、收藏存 Mock 库（按用户），渲染时价格/库存实时 join 商品。
 
 ## 7. 状态处理约定（loading/空/失败）
@@ -114,8 +121,8 @@ pages  →  services  →  utils/request  →  (config.useMock ? mock/server : w
 
 - Product：`{id,title,categoryId,priceFen,stock,sold,images[],desc}`
 - Category：`{id,name}`
-- User：`{id,phone,password,nickname,avatar,balanceFen,points,coupons,token}`（对外经 `publicUser` 去掉 password）
-- Order：`{id,orderNo,userId,items[{productId,title,image,priceFen,qty}],totalFen,status,createdAt,shippedAt}`
+- User：`{id,openid,nickname,avatar,balanceFen,points,coupons,token}`（对外经 `publicUser` 只暴露昵称/头像等，不含 openid/token）
+- Order：`{id,orderNo,userId,items[{productId,title,image,priceFen,qty}],totalFen,status,createdAt,shippedAt,refundRequestedAt,cancelledAt}`
 - Cart line：`{productId,qty,checked}`（返回时 join `product{...}`）
 - Favorites：按用户的 productId 数组
 

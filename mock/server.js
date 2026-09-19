@@ -30,10 +30,14 @@ function genToken () {
   return 'tk_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10)
 }
 
+// Mock 微信身份：真实后端由 code2Session 用 code 换取 openid；Mock 无法调用微信接口，
+// 固定为单一 openid 以演示“按 openid 找/建用户”（首次登录即注册，之后直接登录）。
+const MOCK_OPENID = 'mock_openid_dev'
+
 function publicUser (u) {
   if (!u) return null
   return {
-    id: u.id, phone: u.phone, nickname: u.nickname, avatar: u.avatar,
+    id: u.id, nickname: u.nickname, avatar: u.avatar,
     balanceFen: u.balanceFen, points: u.points, coupons: u.coupons,
   }
 }
@@ -67,30 +71,26 @@ function cartLines (userId) {
 
 // ---------- handlers ----------
 const handlers = {
-  'POST /auth/register' (body) {
+  // 微信登录：模拟 code2Session（用 code 换 openid）-> 按 openid 找/建用户 -> 返回 token+user
+  'POST /auth/wechat-login' (body) {
     const db = dbModule.db
-    const { phone, password, nickname } = body
-    if (!phone || !password) return err(400, '手机号与密码不能为空')
-    if (!/^1\d{10}$/.test(phone)) return err(400, '手机号格式不正确')
-    if (db.users.find(u => u.phone === phone)) return err(400, '该手机号已注册，请直接登录')
-    const user = {
-      id: nextId('u'), phone, password,
-      nickname: nickname || ('宠友' + phone.slice(-4)),
-      avatar: '', balanceFen: 0, points: 0, coupons: 0, token: genToken(),
+    const openid = MOCK_OPENID
+    let user = db.users.find(u => u.openid === openid)
+    const isNewUser = !user
+    if (!user) {
+      // 不存在则注册并登录
+      user = {
+        id: nextId('u'), openid,
+        nickname: '微信用户', avatar: '',
+        balanceFen: 0, points: 0, coupons: 0, token: genToken(),
+      }
+      db.users.push(user)
+    } else {
+      // 已存在直接登录，轮换 token
+      user.token = genToken()
     }
-    db.users.push(user)
     dbModule.save()
-    return ok({ token: user.token, user: publicUser(user) })
-  },
-  'POST /auth/login' (body) {
-    const db = dbModule.db
-    const { phone, password } = body
-    const user = db.users.find(u => u.phone === phone)
-    if (!user) return err(400, '账号不存在，请先注册')
-    if (user.password !== password) return err(400, '密码错误')
-    user.token = genToken()
-    dbModule.save()
-    return ok({ token: user.token, user: publicUser(user) })
+    return ok({ token: user.token, user: publicUser(user), isNewUser })
   },
   'GET /auth/profile' (body, ctx) {
     return ok(publicUser(ctx.user))
@@ -197,7 +197,13 @@ const handlers = {
   'GET /orders' (query, ctx) {
     const db = dbModule.db
     let list = db.orders.filter(o => o.userId === ctx.user.id)
-    if (query.status) list = list.filter(o => o.status === query.status)
+    if (query.status === config.orderStatus.PAID_UNSHIPPED) {
+      // “未发货” tab：尚未取消且未发货（含退款申请中）
+      const group = [config.orderStatus.PAID_UNSHIPPED, config.orderStatus.REFUND_REQUESTED]
+      list = list.filter(o => group.indexOf(o.status) >= 0)
+    } else if (query.status) {
+      list = list.filter(o => o.status === query.status)
+    }
     list.sort((a, b) => b.createdAt - a.createdAt)
     return ok(list)
   },
@@ -247,9 +253,60 @@ const handlers = {
     dbModule.save()
     return ok(o)
   },
+  // 用户申请退款：PAID_UNSHIPPED -> REFUND_REQUESTED
+  'POST /orders/:id/refund' (body, ctx, params) {
+    const db = dbModule.db
+    const o = db.orders.find(x => x.id === params.id && x.userId === ctx.user.id)
+    if (!o) return err(404, '订单不存在')
+    if (o.status !== config.orderStatus.PAID_UNSHIPPED) return err(400, '当前订单状态不可申请退款')
+    o.status = config.orderStatus.REFUND_REQUESTED
+    o.refundRequestedAt = Date.now()
+    dbModule.save()
+    return ok(o)
+  },
+  // 用户撤回退款申请：REFUND_REQUESTED -> PAID_UNSHIPPED
+  'POST /orders/:id/refund/revoke' (body, ctx, params) {
+    const db = dbModule.db
+    const o = db.orders.find(x => x.id === params.id && x.userId === ctx.user.id)
+    if (!o) return err(404, '订单不存在')
+    if (o.status !== config.orderStatus.REFUND_REQUESTED) return err(400, '当前订单状态不可撤回申请')
+    o.status = config.orderStatus.PAID_UNSHIPPED
+    o.refundRequestedAt = 0
+    dbModule.save()
+    return ok(o)
+  },
+  // 商家同意退款/直接取消（Mock，预留给 web 后台）：-> CANCELLED，回补库存
+  'POST /orders/:id/cancel' (body, ctx, params) {
+    const db = dbModule.db
+    const o = db.orders.find(x => x.id === params.id && x.userId === ctx.user.id)
+    if (!o) return err(404, '订单不存在')
+    const cancellable = [config.orderStatus.PAID_UNSHIPPED, config.orderStatus.REFUND_REQUESTED]
+    if (cancellable.indexOf(o.status) < 0) return err(400, '当前订单状态不可取消')
+    o.status = config.orderStatus.CANCELLED
+    o.cancelledAt = Date.now()
+    // 回补库存、回退销量
+    ;(o.items || []).forEach(l => {
+      const p = PRODUCTS.find(x => x.id === l.productId)
+      if (p) { p.stock += l.qty; p.sold -= l.qty }
+    })
+    dbModule.save()
+    return ok(o)
+  },
 
   'GET /user/balance' (body, ctx) {
     return ok({ balanceFen: ctx.user.balanceFen, points: ctx.user.points, coupons: ctx.user.coupons })
+  },
+  // 更新当前用户资料（微信头像昵称填写能力）
+  'POST /user/profile' (body, ctx) {
+    const { nickname, avatar } = body
+    if (nickname !== undefined) {
+      const n = String(nickname).trim().slice(0, 20)
+      if (!n) return err(400, '昵称不能为空')
+      ctx.user.nickname = n
+    }
+    if (avatar !== undefined) ctx.user.avatar = avatar
+    dbModule.save()
+    return ok(publicUser(ctx.user))
   },
   'GET /user/recharge-tiers' () {
     return ok([

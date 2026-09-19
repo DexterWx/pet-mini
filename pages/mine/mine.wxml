@@ -10,12 +10,13 @@
     <view class="header">
       <state-view status="{{profileStatus}}" empty-text="暂无用户信息" bind:retry="loadProfile">
         <view class="header-inner">
-          <view class="user-row">
+          <view class="user-row" bindtap="goProfile">
             <goods-image src="{{user.avatar}}" customClass="gi-avatar"></goods-image>
             <view class="user-meta">
               <text class="nickname">{{user.nickname}}</text>
               <text class="member">普通会员</text>
             </view>
+            <text class="user-edit">编辑资料 ></text>
           </view>
           <view class="stats">
             <view class="stat">

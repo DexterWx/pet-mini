@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "编辑资料",
+  "usingComponents": {
+    "goods-image": "/components/goods-image/goods-image"
+  }
+}

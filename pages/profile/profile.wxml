@@ -1,0 +1,29 @@
+<view class="profile">
+  <view class="p-row">
+    <text class="p-label">头像</text>
+    <button class="p-avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+      <goods-image src="{{avatar}}" customClass="gi-avatar"></goods-image>
+    </button>
+  </view>
+
+  <view class="p-row">
+    <text class="p-label">昵称</text>
+    <input
+      class="p-input"
+      type="nickname"
+      placeholder="请输入昵称"
+      value="{{nickname}}"
+      bindinput="onNickname"
+      bindblur="onNickname"
+      bindchange="onNickname"
+    />
+  </view>
+
+  <view class="p-hint">点击头像可使用微信头像或从相册选择；昵称输入框支持一键填写微信昵称。</view>
+
+  <view
+    class="btn-primary p-save {{saving ? 'p-save-disabled' : ''}}"
+    bindtap="onSave"
+    hover-class="btn-primary-hover"
+  >{{saving ? '保存中…' : '保存'}}</view>
+</view>

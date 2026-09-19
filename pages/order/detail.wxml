@@ -25,11 +25,18 @@
       </view>
     </view>
 
-    <view
-      class="btn-primary od-ship"
-      wx:if="{{order.status === 'PAID_UNSHIPPED'}}"
-      bindtap="onShip"
-      hover-class="btn-primary-hover"
-    >模拟发货（Demo）</view>
+    <view class="od-actions">
+      <!-- 已付款未发货：申请退款 + 模拟发货(Demo) -->
+      <block wx:if="{{order.status === 'PAID_UNSHIPPED'}}">
+        <view class="od-btn od-btn-outline" bindtap="onApplyRefund" hover-class="od-btn-hover">申请退款</view>
+        <view class="od-btn od-btn-ghost" bindtap="onShip" hover-class="od-btn-hover">模拟发货（Demo）</view>
+      </block>
+      <!-- 退款申请中：取消退款申请 + 模拟商家同意(Demo) -->
+      <block wx:elif="{{order.status === 'REFUND_REQUESTED'}}">
+        <view class="od-btn od-btn-outline" bindtap="onRevokeRefund" hover-class="od-btn-hover">取消退款申请</view>
+        <view class="od-btn od-btn-ghost" bindtap="onMerchantCancel" hover-class="od-btn-hover">模拟商家同意退款（Demo）</view>
+      </block>
+      <!-- 已发货 / 已取消：无操作按钮 -->
+    </view>
   </view>
 </state-view>

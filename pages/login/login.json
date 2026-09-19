@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "用户登录",
-  "usingComponents": {}
+  "usingComponents": {
+    "goods-image": "/components/goods-image/goods-image"
+  }
 }
