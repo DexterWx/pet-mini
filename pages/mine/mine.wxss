@@ -1,7 +1,8 @@
 .mine {
   min-height: 100vh;
   background: var(--color-bg);
-  padding-bottom: 120rpx;
+  /* 自定义 tabBar（120rpx）+ 安全区 + 原本留白 */
+  padding-bottom: calc(200rpx + env(safe-area-inset-bottom));
 }
 
 .needlogin {
@@ -22,7 +23,7 @@
 }
 
 .header {
-  background: linear-gradient(135deg, #F4574D, #F0413E);
+  background: var(--gradient-brand);
   padding: 40rpx 32rpx 80rpx;
 }
 
@@ -56,6 +57,7 @@
   color: #fff;
   font-size: 36rpx;
   font-weight: 600;
+  letter-spacing: 1rpx;
 }
 
 .member {
@@ -132,7 +134,10 @@
 }
 
 .quick-icon {
-  font-size: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48rpx;
 }
 
 .quick-label {
@@ -143,26 +148,60 @@
 
 .tools {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   margin-top: 24rpx;
 }
 
+/* 5 个工具等分一行，避免换行后第二行错位 */
 .tool {
-  width: 25%;
+  position: relative;
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 32rpx;
 }
 
 .tool-icon {
-  font-size: 44rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44rpx;
+  /* 固定行高：避免原生 button 与 view 的默认行高差异导致图标上下不对齐 */
+  line-height: 1.4;
 }
 
 .tool-label {
   margin-top: 12rpx;
   font-size: 24rpx;
+  font-weight: 400;
+  line-height: 1.4;
   color: var(--color-text);
+}
+
+/* 在线客服点击层：微信原生 button 的 UA 样式无法完全重置，
+   改用绝对定位透明覆盖层——不参与 flex 布局，因此列宽与基线与其他工具项完全一致 */
+.tool-hit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  line-height: normal;
+  font-size: 0;
+}
+
+.tool-hit::after {
+  border: none;
 }
 
 .recent-scroll {
@@ -200,11 +239,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #2C2C2C;
+  background: var(--color-text);
   padding: 12rpx 32rpx;
 }
 
 .dev-label {
-  color: #ddd;
+  color: rgba(255, 255, 255, 0.85);
   font-size: 24rpx;
 }

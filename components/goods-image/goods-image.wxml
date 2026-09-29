@@ -7,7 +7,5 @@
     lazy-load
     binderror="onError"
   ></image>
-  <view wx:else class="ph ph-img gi-img">
-    <text class="ph-emoji">🐾</text>
-  </view>
+  <view wx:else class="ph ph-img gi-img"><icon name="paw" size="56" color="#C6BFB2" /></view>
 </view>

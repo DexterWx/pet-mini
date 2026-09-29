@@ -27,6 +27,13 @@ Page({
     this.loadProducts(true)
   },
 
+  // 自定义 tabBar：仅同步选中态，不改变原有数据加载时机（分类页走 SWR 缓存）
+  onShow () {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 1 })
+    }
+  },
+
   loadCategories () {
     this.setData({ catStatus: 'loading' })
     categoryService.getCategoriesSWR(c => {

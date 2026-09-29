@@ -4,7 +4,7 @@
   "usingComponents": {
     "search-bar": "/components/search-bar/search-bar",
     "state-view": "/components/state-view/state-view",
-    "goods-card": "/components/goods-card/goods-card",
-    "goods-image": "/components/goods-image/goods-image"
+    "goods-image": "/components/goods-image/goods-image",
+    "icon": "/components/icon/icon"
   }
 }

@@ -5,12 +5,14 @@
 }
 
 .od-status {
-  background: linear-gradient(135deg, #F4574D, #F0413E);
+  background: var(--gradient-brand);
   color: #fff;
   font-size: 36rpx;
   font-weight: 600;
-  border-radius: var(--radius);
+  letter-spacing: 1rpx;
+  border-radius: var(--radius-lg);
   padding: 40rpx 32rpx;
+  box-shadow: var(--shadow-card);
 }
 
 .od-card {
@@ -74,6 +76,20 @@
   font-size: 26rpx;
 }
 
+/* 金额明细行（商品金额 / 运费） */
+.od-amt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 26rpx;
+  color: var(--color-text);
+  line-height: 2;
+}
+
+.od-free {
+  color: var(--color-primary);
+}
+
 .od-total {
   display: flex;
   justify-content: flex-end;
@@ -99,9 +115,10 @@
 .od-btn {
   border-radius: 999rpx;
   text-align: center;
-  padding: 20rpx 0;
+  padding: 18rpx 0;
   font-size: 30rpx;
-  background: #fff;
+  background: var(--color-cream);
+  border: var(--edge-width) solid var(--color-edge);
   margin-bottom: 20rpx;
 }
 
@@ -111,7 +128,30 @@
 
 .od-btn-outline {
   color: var(--color-primary);
-  border: 2rpx solid var(--color-primary);
+  border: var(--edge-width) solid var(--color-edge);
+  font-weight: 600;
+}
+
+.od-btn-primary {
+  color: #fff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
+
+.od-refund-tip {
+  font-size: 26rpx;
+  color: var(--color-text-sub);
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+/* 已完成说明（主动/自动确认收货） */
+.od-done-tip {
+  font-size: 26rpx;
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: 20rpx;
 }
 
 .od-btn-ghost {

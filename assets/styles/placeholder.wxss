@@ -1,16 +1,17 @@
 /* assets/styles/placeholder.wxss
-   纯色 / CSS 占位资源：正式 UI 资源到位后直接替换本文件或对应节点。 */
+   纯色 / CSS 占位资源：正式 UI 资源到位后直接替换本文件或对应节点。
+   熊猫配色：奶白底 + 暖灰图形，不使用彩色。 */
 .ph {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #EFE7DA;
-  color: #B9A98F;
+  background: #F3EFE6;
+  color: #B9B2A6;
 }
 
-/* 图片占位：米色渐变 + 爪印 */
+/* 图片占位：奶白渐变 + 爪印 */
 .ph-img {
-  background: linear-gradient(135deg, #F3EAD9, #E4D5BC);
+  background: linear-gradient(135deg, #FBF9F4, #EDE7DB);
 }
 
 .ph-emoji {
@@ -20,6 +21,7 @@
 /* 圆形图标占位 */
 .ph-circle {
   border-radius: 50%;
-  background: #F0EAE0;
-  color: #C9BBA4;
+  background: #FFFDF8;
+  border: 2rpx solid #1F1D1B;
+  color: #A9A296;
 }

@@ -19,6 +19,14 @@
     />
   </view>
 
+  <view class="p-row">
+    <text class="p-label">手机号</text>
+    <text class="p-value">{{phone || '未绑定'}}</text>
+    <button class="p-rebind" open-type="getPhoneNumber" bindgetphonenumber="onRebindPhone">{{phone ? '换绑' : '绑定'}}</button>
+  </view>
+
+  <view class="p-hint">手机号由微信授权获取并担保，仅用于下单联系与售后；换绑只能重新取当前微信号绑定的号码。</view>
+
   <view class="p-hint">点击头像可使用微信头像或从相册选择；昵称输入框支持一键填写微信昵称。</view>
 
   <view

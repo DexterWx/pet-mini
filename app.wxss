@@ -25,23 +25,46 @@ view, text, image, scroll-view, swiper, input, button {
   margin-bottom: 20rpx;
 }
 
-/* 通用卡片 */
+/* 通用卡片：奶白底 + 黑边，熊猫风格的统一容器语言 */
 .card {
   background: var(--color-card);
+  border: var(--edge-width) solid var(--color-edge);
   border-radius: var(--radius);
   padding: 24rpx;
+  box-shadow: var(--shadow-card);
 }
 
-/* 通用主色按钮 */
+/* 通用主按钮：熊猫黑实底 + 白字 */
 .btn-primary {
   background: var(--color-primary);
   color: #fff;
+  border: var(--edge-width) solid var(--color-primary);
   border-radius: 999rpx;
   text-align: center;
   padding: 20rpx 0;
   font-size: 30rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
 }
 
 .btn-primary-hover {
-  opacity: 0.85;
+  background: var(--color-primary-deep);
+  border-color: var(--color-primary-deep);
+  opacity: 1;
+}
+
+/* 通用描边按钮：奶白底 + 黑边 + 黑字（次要动作） */
+.btn-outline {
+  background: var(--color-cream);
+  color: var(--color-primary);
+  border: var(--edge-width) solid var(--color-edge);
+  border-radius: 999rpx;
+  text-align: center;
+  padding: 18rpx 0;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.btn-outline-hover {
+  background: var(--color-primary-light);
 }

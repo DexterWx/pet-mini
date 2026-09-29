@@ -1,10 +1,8 @@
 // utils/request.js
-// 统一请求层：config.useMock 时走 mock/server，否则走 wx.request(baseURL)。
+// 统一请求层：基于 wx.request 访问真实后端。
 // 自动注入 Token、归一化错误、401 清登录态并跳登录。
-// 未来接真实后端/微信认证时，仅需替换本文件的传输适配，页面与 services 不变。
 const config = require('../config/index')
 const storage = require('./storage')
-const mockServer = require('../mock/server')
 
 class ApiError extends Error {
   constructor (code, message) {
@@ -29,9 +27,6 @@ function handleUnauthorized () {
 }
 
 function transport (opts, meta) {
-  if (config.useMock) {
-    return mockServer.request(opts.method, opts.url, opts.data, meta)
-  }
   return new Promise((resolve, reject) => {
     wx.request({
       url: config.baseURL + opts.url,

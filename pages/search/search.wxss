@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   padding: 16rpx 24rpx;
-  background: #fff;
+  background: var(--color-card);
 }
 
 .search-bar-row search-bar {
@@ -51,8 +51,9 @@
 }
 
 .tag {
-  padding: 12rpx 28rpx;
-  background: #EDEDED;
+  padding: 10rpx 26rpx;
+  background: var(--color-cream);
+  border: var(--edge-width) solid var(--color-edge);
   border-radius: 999rpx;
   color: var(--color-text);
   font-size: 26rpx;

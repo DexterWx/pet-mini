@@ -9,6 +9,18 @@
     </view>
 
     <view class="card od-card">
+      <view class="od-row"><text class="od-label">配送方式</text><text class="od-value">{{order.deliveryText}}</text></view>
+      <view class="od-row"><text class="od-label">收货人</text><text class="od-value">{{order.receiverName}} {{order.receiverPhone}}</text></view>
+      <view class="od-row" wx:if="{{order.address}}"><text class="od-label">收货地址</text><text class="od-value">{{order.address}}</text></view>
+      <view class="od-row" wx:if="{{order.shippedAt}}">
+        <text class="od-label">物流单号</text>
+        <!-- 自提无真实物流单号，统一显示 # 占位 -->
+        <text class="od-value" wx:if="{{order.deliveryType === 'SELF_PICKUP'}}">#</text>
+        <text class="od-value" wx:else>{{order.carrier ? order.carrier + ' ' : ''}}{{order.shipNo}}</text>
+      </view>
+    </view>
+
+    <view class="card od-card">
       <view class="od-line" wx:for="{{order.items}}" wx:key="productId">
         <goods-image src="{{item.image}}" customClass="gi-mid"></goods-image>
         <view class="od-info">
@@ -19,6 +31,15 @@
           </view>
         </view>
       </view>
+      <view class="od-amt-row">
+        <text>商品金额</text>
+        <text>¥{{order.goodsTotalText}}</text>
+      </view>
+      <view class="od-amt-row">
+        <text>运费</text>
+        <text wx:if="{{order.hasFreight}}">¥{{order.freightText}}</text>
+        <text wx:else class="od-free">免运费</text>
+      </view>
       <view class="od-total">
         <text>合计</text>
         <text class="od-total-num">¥{{order.totalText}}</text>
@@ -26,17 +47,27 @@
     </view>
 
     <view class="od-actions">
-      <!-- 已付款未发货：申请退款 + 模拟发货(Demo) -->
-      <block wx:if="{{order.status === 'PAID_UNSHIPPED'}}">
-        <view class="od-btn od-btn-outline" bindtap="onApplyRefund" hover-class="od-btn-hover">申请退款</view>
-        <view class="od-btn od-btn-ghost" bindtap="onShip" hover-class="od-btn-hover">模拟发货（Demo）</view>
+      <!-- 待付款：去支付 / 取消 -->
+      <block wx:if="{{order.status === 'PENDING_PAY'}}">
+        <view class="od-btn od-btn-outline" bindtap="onCancel" hover-class="od-btn-hover">取消订单</view>
+        <view class="od-btn od-btn-primary" bindtap="onPay" hover-class="od-btn-hover">去支付</view>
       </block>
-      <!-- 退款申请中：取消退款申请 + 模拟商家同意(Demo) -->
-      <block wx:elif="{{order.status === 'REFUND_REQUESTED'}}">
-        <view class="od-btn od-btn-outline" bindtap="onRevokeRefund" hover-class="od-btn-hover">取消退款申请</view>
-        <view class="od-btn od-btn-ghost" bindtap="onMerchantCancel" hover-class="od-btn-hover">模拟商家同意退款（Demo）</view>
+      <!-- 已有待处理退款申请：展示进度 + 可撤回 -->
+      <block wx:elif="{{order.pendingRefund}}">
+        <text class="od-refund-tip">退款申请处理中，请等商家确认</text>
+        <view class="od-btn od-btn-outline" bindtap="onRevokeRefund" hover-class="od-btn-hover">撤回退款申请</view>
       </block>
-      <!-- 已发货 / 已取消：无操作按钮 -->
+      <!-- 待收货/未发货：确认收货（主）+ 申请退款（仅服务端 canRefund 为真时） -->
+      <block wx:elif="{{order.canConfirm || order.canRefund}}">
+        <text class="od-refund-tip" wx:if="{{order.refundCountdownText}}">{{order.refundCountdownText}}</text>
+        <view class="od-btn od-btn-outline" wx:if="{{order.canRefund}}" bindtap="onApplyRefund" hover-class="od-btn-hover">申请退款</view>
+        <view class="od-btn od-btn-primary" wx:if="{{order.canConfirm}}" bindtap="onConfirm" hover-class="od-btn-hover">确认收货</view>
+      </block>
+      <!-- 已完成：展示完成说明（区分主动/自动），无操作 -->
+      <block wx:elif="{{order.status === 'COMPLETED'}}">
+        <text class="od-done-tip">{{order.completedText}}</text>
+      </block>
+      <!-- 已关闭 / 退款中 / 已退款 等：无用户侧操作 -->
     </view>
   </view>
 </state-view>

@@ -1,5 +1,45 @@
-<state-view status="{{status}}" empty-text="订单商品无效" bind:retry="load">
+<state-view status="{{status}}" empty-text="订单商品无效" bind:retry="loadProducts">
   <view class="confirm">
+    <!-- 收货地址 -->
+    <view class="c-addr card" bindtap="onChooseAddress">
+      <block wx:if="{{address}}">
+        <view class="c-addr-main">
+          <view class="c-addr-line1">{{address.receiverName}} {{address.phone}}</view>
+          <view class="c-addr-line2">{{deliveryType === 'SELF_PICKUP' && !address.address ? '（自提，无需地址）' : address.address}}</view>
+        </view>
+        <text class="c-addr-edit" catchtap="onManageAddress">管理</text>
+      </block>
+      <view wx:else class="c-addr-empty">请选择收货地址＋ 去添加</view>
+    </view>
+
+    <!-- 配送方式 -->
+    <view class="c-delivery card">
+      <text class="c-delivery-label">配送方式</text>
+      <view class="c-delivery-opts">
+        <view
+          wx:for="{{deliveryOptions}}"
+          wx:key="key"
+          class="c-delivery-opt {{deliveryType === item.key ? 'active' : ''}}"
+          data-key="{{item.key}}"
+          bindtap="onDeliveryTap"
+        >{{item.label}}</view>
+      </view>
+    </view>
+
+    <!-- 支付方式：余额与微信不可混用，余额不足只能整单走微信 -->
+    <view class="c-delivery card">
+      <text class="c-delivery-label">支付方式</text>
+      <view class="c-delivery-opts">
+        <view class="c-delivery-opt {{payMethod === 'wechat' ? 'active' : ''}}" data-key="wechat" bindtap="onPayMethodTap">微信支付</view>
+        <view
+          class="c-delivery-opt {{payMethod === 'balance' ? 'active' : ''}} {{balanceEnough ? '' : 'disabled'}}"
+          data-key="balance"
+          bindtap="onPayMethodTap"
+        >余额支付</view>
+      </view>
+      <view class="c-pay-tip {{balanceEnough ? '' : 'warn'}}">{{payTip}}</view>
+    </view>
+
     <view class="c-line" wx:for="{{lines}}" wx:key="productId">
       <goods-image src="{{item.image}}" customClass="gi-thumb"></goods-image>
       <view class="c-info">
@@ -11,11 +51,23 @@
       </view>
     </view>
 
-    <view class="c-total">
-      <text>合计</text>
-      <text class="c-total-num">¥{{totalText}}</text>
+    <view class="c-amounts card">
+      <view class="c-amt-row">
+        <text>商品金额</text>
+        <text>¥{{goodsTotalText}}</text>
+      </view>
+      <view class="c-amt-row">
+        <text>运费</text>
+        <text wx:if="{{freightText === '0.00'}}" class="c-amt-free">免运费</text>
+        <text wx:else>¥{{freightText}}</text>
+      </view>
+      <view class="c-amt-row c-amt-total">
+        <text>合计</text>
+        <text class="c-total-num">¥{{totalText}}</text>
+      </view>
+      <view class="c-amt-tip" wx:if="{{shipTip}}"><icon name="truck" size="22" color="#8B857C" /><text>{{shipTip}}</text></view>
     </view>
 
-    <view class="btn-primary c-submit" bindtap="onSubmit" hover-class="btn-primary-hover">提交订单并支付</view>
+    <view class="btn-primary c-submit" bindtap="onSubmit" hover-class="btn-primary-hover">{{submitText}}</view>
   </view>
 </state-view>

@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "联系我们",
+  "navigationBarTitleText": "收货地址",
   "usingComponents": {
     "state-view": "/components/state-view/state-view"
   }

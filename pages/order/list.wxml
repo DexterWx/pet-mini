@@ -29,11 +29,17 @@
           <text class="o-time">{{item.timeText}}</text>
           <text class="o-total">合计 ¥{{item.totalText}}</text>
           <view
-            class="o-ship"
-            wx:if="{{item.status === 'PAID_UNSHIPPED'}}"
-            catchtap="onShip"
+            wx:if="{{item.status === 'PENDING_PAY'}}"
+            class="o-pay"
+            catchtap="onPay"
             data-id="{{item.id}}"
-          >模拟发货</view>
+          >去支付</view>
+          <view
+            wx:if="{{item.canConfirm}}"
+            class="o-pay o-confirm"
+            catchtap="onConfirm"
+            data-id="{{item.id}}"
+          >确认收货</view>
         </view>
       </view>
     </view>

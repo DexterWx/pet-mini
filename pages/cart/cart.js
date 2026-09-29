@@ -1,33 +1,41 @@
 // pages/cart/cart.js
-// 购物车：需登录。价格/库存实时来自 API（cart line join 商品），不读本地缓存。
+// 购物车：需登录。价格/库存实时来自 API（cart line join 商品），不读本地缓存；展示包邮/运费提示。
 const cartService = require('../../services/cart.service')
-const productService = require('../../services/product.service')
+const shippingService = require('../../services/shipping.service')
 const router = require('../../utils/router')
+const config = require('../../config/index')
 const format = require('../../utils/format')
 
 Page({
   data: {
     needLogin: false,
     cartStatus: 'loading',
-    recStatus: 'loading',
     lines: [],
-    recommend: [],
     allChecked: false,
     checkedCount: 0,
     totalText: '0',
+    shipTip: '',
   },
 
   onShow () {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 2 })
+    }
     if (!router.isLoggedIn()) {
       this.setData({ needLogin: true, lines: [] })
       return
     }
     this.setData({ needLogin: false })
     this.loadCart()
+    this.loadShipping()
   },
 
-  onLoad () {
-    this.loadRecommend()
+  // 运费规则只用于展示（下单时服务端会重算），失败不影响购物车
+  loadShipping () {
+    shippingService.getConfig().then(cfg => {
+      this.shipping = cfg
+      this.recompute()
+    }).catch(() => {})
   },
 
   goLogin () {
@@ -47,14 +55,6 @@ Page({
     })
   },
 
-  loadRecommend () {
-    this.setData({ recStatus: 'loading' })
-    productService.getRecommend().then(list => {
-      const l = list || []
-      this.setData({ recommend: l, recStatus: l.length ? 'ok' : 'empty' })
-    }).catch(() => this.setData({ recStatus: 'error' }))
-  },
-
   recompute () {
     const lines = this.data.lines
     const checked = lines.filter(l => l.checked)
@@ -63,6 +63,8 @@ Page({
       allChecked: lines.length > 0 && checked.length === lines.length,
       checkedCount: checked.length,
       totalText: format.formatPrice(totalFen),
+      // 购物车默认按快递场景提示（自提在结算页选定后免运费）
+      shipTip: shippingService.freightTip(this.shipping, totalFen, config.deliveryType.EXPRESS),
     })
   },
 
@@ -120,16 +122,9 @@ Page({
     router.navigate('/pages/order/confirm?items=' + encodeURIComponent(JSON.stringify(items)))
   },
 
-  onCardTap (e) {
-    router.navigate('/pages/goods/detail?id=' + e.detail.id)
-  },
-
-  onCardAdd (e) {
-    cartService.add(e.detail.id, 1).then(() => {
-      wx.showToast({ title: '已加入购物车', icon: 'success' })
-      this.loadCart()
-    }).catch(err => {
-      if (err.code !== 401) wx.showToast({ title: err.message || '加入失败', icon: 'none' })
-    })
+  // 点击购物车行（图/标题）跳商品详情
+  onLineDetail (e) {
+    const id = e.currentTarget.dataset.id
+    if (id) router.navigate('/pages/goods/detail?id=' + id)
   },
 })

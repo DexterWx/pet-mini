@@ -23,14 +23,6 @@
               <text class="stat-num">{{balanceText}}</text>
               <text class="stat-label">余额</text>
             </view>
-            <view class="stat">
-              <text class="stat-num">{{points}}</text>
-              <text class="stat-label">积分</text>
-            </view>
-            <view class="stat">
-              <text class="stat-num">{{coupons}}</text>
-              <text class="stat-label">优惠券</text>
-            </view>
           </view>
         </view>
       </state-view>
@@ -42,13 +34,21 @@
         <text class="card-link" bindtap="goOrders" data-status="">查看全部 ></text>
       </view>
       <view class="order-quick">
+        <view class="quick" bindtap="goOrders" data-status="PENDING_PAY">
+          <view class="quick-icon"><icon name="banknote" size="46" color="#1F1D1B" /></view>
+          <text class="quick-label">未付款</text>
+        </view>
         <view class="quick" bindtap="goOrders" data-status="PAID_UNSHIPPED">
-          <text class="quick-icon">📦</text>
+          <view class="quick-icon"><icon name="package" size="46" color="#1F1D1B" /></view>
           <text class="quick-label">未发货</text>
         </view>
         <view class="quick" bindtap="goOrders" data-status="SHIPPED">
-          <text class="quick-icon">🚚</text>
+          <view class="quick-icon"><icon name="truck" size="46" color="#1F1D1B" /></view>
           <text class="quick-label">已发货</text>
+        </view>
+        <view class="quick" bindtap="goOrders" data-status="AFTER_SALE">
+          <view class="quick-icon"><icon name="refund" size="46" color="#1F1D1B" /></view>
+          <text class="quick-label">退款/售后</text>
         </view>
       </view>
     </view>
@@ -56,11 +56,17 @@
     <view class="card tool-card">
       <text class="card-title">常用工具</text>
       <view class="tools">
-        <view class="tool" bindtap="goCart"><text class="tool-icon">🛒</text><text class="tool-label">我的购物车</text></view>
-        <view class="tool" bindtap="goRecharge"><text class="tool-icon">💰</text><text class="tool-label">余额充值</text></view>
-        <view class="tool" bindtap="goContact"><text class="tool-icon">☎️</text><text class="tool-label">联系客服</text></view>
-        <view class="tool" bindtap="onService"><text class="tool-icon">🎧</text><text class="tool-label">在线客服</text></view>
-        <view class="tool" bindtap="onLogout"><text class="tool-icon">🚪</text><text class="tool-label">退出登录</text></view>
+        <view class="tool" bindtap="goCart"><view class="tool-icon"><icon name="cart" size="42" color="#1F1D1B" /></view><text class="tool-label">购物车</text></view>
+        <view class="tool" bindtap="goFavorites"><view class="tool-icon"><icon name="heart" size="42" color="#1F1D1B" /></view><text class="tool-label">我的收藏</text></view>
+        <view class="tool" bindtap="goAddress"><view class="tool-icon"><icon name="pin" size="42" color="#1F1D1B" /></view><text class="tool-label">收货地址</text></view>
+        <view class="tool" bindtap="goRecharge"><view class="tool-icon"><icon name="wallet" size="42" color="#1F1D1B" /></view><text class="tool-label">余额充值</text></view>
+        <view class="tool">
+          <view class="tool-icon"><icon name="headset" size="42" color="#1F1D1B" /></view>
+          <text class="tool-label">在线客服</text>
+          <!-- 透明原生按钮覆盖整格：不参与 flex 布局，保证与其他工具项同宽同基线 -->
+          <button class="tool-hit" open-type="contact"></button>
+        </view>
+        <view class="tool" bindtap="onLogout"><view class="tool-icon"><icon name="logout" size="42" color="#1F1D1B" /></view><text class="tool-label">退出登录</text></view>
       </view>
     </view>
 
@@ -74,9 +80,4 @@
       </scroll-view>
     </view>
   </block>
-
-  <view class="dev-bar">
-    <text class="dev-label">开发者：模拟接口失败</text>
-    <switch checked="{{mockFail}}" bindchange="onMockFailChange" color="#F0413E" />
-  </view>
 </view>

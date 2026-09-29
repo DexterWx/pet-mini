@@ -3,6 +3,6 @@
   "usingComponents": {
     "state-view": "/components/state-view/state-view",
     "goods-image": "/components/goods-image/goods-image",
-    "goods-card": "/components/goods-card/goods-card"
+    "icon": "/components/icon/icon"
   }
 }

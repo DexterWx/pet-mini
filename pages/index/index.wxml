@@ -15,7 +15,7 @@
         indicator-color="rgba(255,255,255,0.5)"
         indicator-active-color="#FFFFFF"
       >
-        <swiper-item wx:for="{{banners}}" wx:key="id">
+        <swiper-item wx:for="{{banners}}" wx:key="id" data-id="{{item.productId}}" bindtap="onBannerTap">
           <goods-image src="{{item.image}}" customClass="gi-banner"></goods-image>
         </swiper-item>
       </swiper>
@@ -29,7 +29,7 @@
           bindtap="onSquare"
           hover-class="square-hover"
         >
-          <view class="square-icon">{{item.key === 'buy' ? '🛍️' : '📋'}}</view>
+          <view class="square-icon"><icon name="{{item.key === 'buy' ? 'bag' : 'grid'}}" size="60" color="#1F1D1B" /></view>
           <text class="square-title">{{item.title}}</text>
           <text class="square-sub" wx:if="{{item.sub}}">{{item.sub}}</text>
         </view>
@@ -37,7 +37,7 @@
 
       <view class="promos">
         <view
-          class="promo {{item.key === 'contact' ? 'promo-contact' : 'promo-recharge'}}"
+          class="promo promo-recharge"
           wx:for="{{entries.promos}}"
           wx:key="key"
           data-key="{{item.key}}"
@@ -48,18 +48,8 @@
             <text class="promo-title">{{item.title}}</text>
             <text class="promo-sub">{{item.sub}}</text>
           </view>
-          <view class="promo-icon">{{item.key === 'contact' ? '☎️' : '👛'}}</view>
+          <view class="promo-icon"><icon name="wallet" size="48" color="#1F1D1B" /></view>
         </view>
-      </view>
-    </view>
-  </state-view>
-
-  <view class="rec-header">— 为您推荐 —</view>
-
-  <state-view status="{{recStatus}}" empty-text="暂无推荐商品" bind:retry="loadRecommend">
-    <view class="grid-2 rec-grid">
-      <view class="grid-item" wx:for="{{recommend}}" wx:key="id">
-        <goods-card goods="{{item}}" layout="grid" bind:cardtap="onCardTap" bind:cardadd="onCardAdd"></goods-card>
       </view>
     </view>
   </state-view>

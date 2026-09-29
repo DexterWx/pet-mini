@@ -1,7 +1,8 @@
 .home {
   min-height: 100vh;
   background: var(--color-home-bg);
-  padding-bottom: 40rpx;
+  /* 预留自定义 tabBar 高度（120rpx）+ 安全区 + 原本留白 */
+  padding-bottom: calc(180rpx + env(safe-area-inset-bottom));
 }
 
 .home-search {
@@ -12,15 +13,18 @@
   padding: 0 24rpx;
 }
 
+/* 正方形大图 Banner（.home-top 左右各 24rpx 内边距 -> 内容宽 702rpx，高与宽一致） */
 .banner {
-  height: 320rpx;
+  height: 702rpx;
   border-radius: var(--radius-lg);
   overflow: hidden;
+  border: var(--edge-width) solid var(--color-edge);
+  box-shadow: var(--shadow-card);
 }
 
 .banner-img {
   width: 100%;
-  height: 320rpx;
+  height: 702rpx;
   border-radius: var(--radius-lg);
 }
 
@@ -32,12 +36,14 @@
 
 .square {
   width: 48.5%;
-  background: var(--color-home-tan);
+  background: var(--color-cream);
+  border: var(--edge-width) solid var(--color-edge);
   border-radius: var(--radius-lg);
   padding: 40rpx 24rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: var(--shadow-card);
 }
 
 .square-hover {
@@ -52,13 +58,13 @@
   margin-top: 16rpx;
   font-size: 34rpx;
   font-weight: 700;
-  color: #4A3524;
+  color: var(--color-text);
 }
 
 .square-sub {
   margin-top: 8rpx;
   font-size: 24rpx;
-  color: #6B4E33;
+  color: var(--color-text-sub);
 }
 
 .promos {
@@ -69,21 +75,19 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border: var(--edge-width) solid var(--color-edge);
   border-radius: var(--radius);
   padding: 28rpx 32rpx;
   margin-bottom: 24rpx;
+  box-shadow: var(--shadow-card);
 }
 
 .promo-hover {
   opacity: 0.9;
 }
 
-.promo-contact {
-  background: var(--color-home-yellow);
-}
-
 .promo-recharge {
-  background: var(--color-home-tan);
+  background: var(--color-cream);
 }
 
 .promo-text {
@@ -94,27 +98,16 @@
 .promo-title {
   font-size: 34rpx;
   font-weight: 700;
-  color: #4A3524;
+  color: var(--color-text);
 }
 
 .promo-sub {
   margin-top: 6rpx;
   font-size: 22rpx;
   letter-spacing: 2rpx;
-  color: #6B4E33;
+  color: var(--color-text-sub);
 }
 
 .promo-icon {
   font-size: 56rpx;
-}
-
-.rec-header {
-  text-align: center;
-  color: #8A7358;
-  font-size: 26rpx;
-  margin: 40rpx 0 24rpx;
-}
-
-.rec-grid {
-  padding: 0 24rpx;
 }

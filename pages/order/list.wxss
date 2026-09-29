@@ -5,11 +5,13 @@
 
 .tabs {
   display: flex;
-  background: #fff;
+  background: var(--color-card);
+  border-bottom: var(--edge-width) solid var(--color-edge);
   padding: 20rpx 0;
   position: sticky;
   top: 0;
   z-index: 10;
+  box-shadow: var(--shadow-card);
 }
 
 .tab {
@@ -32,9 +34,11 @@
 
 .order {
   background: var(--color-card);
+  border: var(--edge-width) solid var(--color-edge);
   border-radius: var(--radius);
   padding: 24rpx;
   margin-bottom: 24rpx;
+  box-shadow: var(--shadow-card);
 }
 
 .o-head {
@@ -85,10 +89,19 @@
   margin-right: 20rpx;
 }
 
-.o-ship {
-  border: 2rpx solid var(--color-primary);
-  color: var(--color-primary);
+.o-pay {
+  background: var(--color-primary);
+  color: #fff;
+  border: var(--edge-width) solid var(--color-primary);
   border-radius: 999rpx;
-  padding: 8rpx 24rpx;
+  padding: 6rpx 26rpx;
   font-size: 24rpx;
+  font-weight: 600;
+}
+
+/* 确认收货：奶白底 + 黑边描边，与去支付区分 */
+.o-confirm {
+  background: var(--color-cream);
+  color: var(--color-primary);
+  border: var(--edge-width) solid var(--color-edge);
 }

@@ -3,7 +3,7 @@
 const productService = require('../../services/product.service')
 const cartService = require('../../services/cart.service')
 const userService = require('../../services/user.service')
-const contactService = require('../../services/contact.service')
+const shippingService = require('../../services/shipping.service')
 const router = require('../../utils/router')
 const format = require('../../utils/format')
 
@@ -15,11 +15,20 @@ Page({
     priceText: '',
     currentImg: 0,
     favorited: false,
+    shipTip: '',
   },
 
   onLoad (options) {
     this.setData({ id: options.id || '' })
     this.load()
+    this.loadShipping()
+  },
+
+  // 运费规则仅用于展示（下单时服务端会重算），失败不影响浏览
+  loadShipping () {
+    shippingService.getConfig().then(cfg => {
+      this.setData({ shipTip: shippingService.ruleText(cfg) })
+    }).catch(() => {})
   },
 
   load () {
@@ -47,10 +56,6 @@ Page({
 
   onSwiperChange (e) {
     this.setData({ currentImg: e.detail.current })
-  },
-
-  onService () {
-    contactService.openCustomerService()
   },
 
   goCart () {

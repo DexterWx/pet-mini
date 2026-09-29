@@ -1,0 +1,21 @@
+<view class="fav">
+  <state-view status="{{status}}" empty-text="还没有收藏的商品" bind:retry="load">
+    <view class="grid-2 fav-grid">
+      <view
+        class="grid-item"
+        wx:for="{{list}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        data-title="{{item.title}}"
+        bindlongpress="onLongPress"
+      >
+        <goods-card goods="{{item}}" layout="grid" bind:cardtap="onCardTap" bind:cardadd="onCardAdd"></goods-card>
+      </view>
+    </view>
+  </state-view>
+
+  <view class="fav-tip" wx:if="{{status === 'ok'}}">长按卡片可取消收藏</view>
+  <view class="fav-empty-btn" wx:if="{{status === 'empty'}}">
+    <view class="btn-primary" bindtap="goCategory" hover-class="btn-primary-hover">去逛逛分类</view>
+  </view>
+</view>

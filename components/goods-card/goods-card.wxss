@@ -1,7 +1,9 @@
 .gc {
   background: var(--color-card, #fff);
-  border-radius: var(--radius, 16rpx);
+  border: var(--edge-width, 2rpx) solid var(--color-edge, #1F1D1B);
+  border-radius: var(--radius, 22rpx);
   overflow: hidden;
+  box-shadow: var(--shadow-card, 0 2rpx 8rpx rgba(31, 29, 27, 0.04));
 }
 
 .gc-hover {
@@ -56,7 +58,7 @@
 
 .gc-title {
   font-size: 28rpx;
-  color: var(--color-text, #333);
+  color: var(--color-text, #1F1D1B);
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
@@ -68,7 +70,7 @@
 }
 
 .gc-price {
-  color: var(--color-primary, #F0413E);
+  color: var(--color-primary, #1F1D1B);
   font-size: 34rpx;
   font-weight: 600;
 }
@@ -81,7 +83,7 @@
 }
 
 .gc-sold {
-  color: var(--color-text-sub, #999);
+  color: var(--color-text-sub, #8B857C);
   font-size: 24rpx;
 }
 
@@ -89,7 +91,9 @@
   width: 56rpx;
   height: 56rpx;
   border-radius: 50%;
-  background: var(--color-primary-light, #FDECEB);
+  background: var(--color-cream, #FFFDF8);
+  border: var(--edge-width, 2rpx) solid var(--color-edge, #1F1D1B);
+  color: var(--color-primary, #1F1D1B);
   display: flex;
   align-items: center;
   justify-content: center;

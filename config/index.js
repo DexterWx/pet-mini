@@ -1,26 +1,20 @@
 // config/index.js
-// 全局配置：环境、Mock 开关、缓存策略、业务常量。
-// 未来接真实后端时，仅需将 useMock 置为 false 并填写 baseURL。
+// 全局配置：环境、后端地址、缓存策略、业务常量。
+
+// 开发机（跑 pet-back 的电脑）地址：模拟器与真机共用同一个值。
+// 真机必须用电脑的内网 IP —— 手机上的 127.0.0.1 是手机自己，连不到电脑。
+// 该值由 scripts/set-dev-host.sh 自动探测并回写，换网络后重跑一次即可，不需手改。
+const DEV_HOST = '192.168.50.111'
+const DEV_PORT = '8000'
+
 const config = {
   env: 'dev',
 
-  // 真实后端地址（useMock = false 时启用）；本地联调需在开发者工具勾选「不校验合法域名」
-  baseURL: 'http://127.0.0.1:8000/api/v1/client',
+  // 真实后端地址（开发者工具需勾选「不校验合法域名」；开发版真机不校验服务器域名）
+  baseURL: 'http://' + DEV_HOST + ':' + DEV_PORT + '/api/v1/client',
 
-  // Demo 阶段使用 Mock API；联调 pet-back 时置为 false
-  useMock: false,
-
-  mock: {
-    // 模拟网络延迟区间(ms)
-    latency: [200, 600],
-    // 全局随机失败率 0~1（用于验证错误态）
-    failRate: 0,
-  },
-
-  payment: {
-    // true: 直接返回支付成功；false: 弹出 ActionSheet 由测试者选择 成功/失败/取消
-    autoSuccess: false,
-  },
+  // 注：支付结果一律以服务端为准（订单轮询状态、充值轮询到账），
+  // 旧版模拟支付的 autoSuccess 开关已随真实微信支付接入而移除。
 
   cache: {
     // 允许缓存的展示类数据 TTL(ms)；库存/价格/订单/支付/余额不缓存
@@ -38,39 +32,47 @@ const config = {
     profile: 'auth.profile',
     searchHistory: 'ux.searchHistory',
     recentViewed: 'ux.recentViewed',
-    mockFail: 'dev.mockFail',
-    db: 'mock.db',
   },
 
-  // 订单状态机：
-  //   PAID_UNSHIPPED 已付款未发货
-  //     -> REFUND_REQUESTED 用户申请退款(待商家确认)，用户可撤回到 PAID_UNSHIPPED
-  //     -> CANCELLED 商家同意退款/直接取消(终态，Mock 无真实资金流)
-  //     -> SHIPPED 已发货(不可取消)
-  //   REFUNDING/REFUNDED 为接入真实支付后预留：CANCELLED -> REFUNDING -> REFUNDED
+  // 订单状态机（与后端 core/constants.py OrderStatus 对齐）：
+  //   PENDING_PAY 待付款 --支付成功--> PAID_UNSHIPPED 待发货 --发货--> SHIPPED 已发货(履约终态)
+  //   PENDING_PAY --超时/取消--> CLOSED 已关闭
+  //   售后(after_sales 表驱动)：用户申请/管理员发起 -> 管理员同意 -> REFUNDING -> REFUNDED
   orderStatus: {
+    PENDING_PAY: 'PENDING_PAY',
     PAID_UNSHIPPED: 'PAID_UNSHIPPED',
-    REFUND_REQUESTED: 'REFUND_REQUESTED',
-    CANCELLED: 'CANCELLED',
     SHIPPED: 'SHIPPED',
-    // 接入支付后启用：
+    COMPLETED: 'COMPLETED',
+    CLOSED: 'CLOSED',
     REFUNDING: 'REFUNDING',
     REFUNDED: 'REFUNDED',
   },
   orderStatusText: {
-    PAID_UNSHIPPED: '已付款，未发货',
-    REFUND_REQUESTED: '退款申请中',
-    CANCELLED: '已取消',
-    SHIPPED: '已发货',
-    // 接入支付后启用：
+    PENDING_PAY: '待付款',
+    PAID_UNSHIPPED: '待发货',
+    SHIPPED: '待收货',
+    COMPLETED: '已完成',
+    CLOSED: '已关闭',
     REFUNDING: '退款中',
     REFUNDED: '已退款',
   },
-  // 订单列表 tab（key 保持不变；“未发货”在 Mock 层按分组匹配 PAID_UNSHIPPED + REFUND_REQUESTED）
+  // 配送方式：快递（需完整地址）/ 自提（仅需姓名+电话，管理端录提货号）
+  deliveryType: {
+    EXPRESS: 'EXPRESS',
+    SELF_PICKUP: 'SELF_PICKUP',
+  },
+  deliveryTypeText: {
+    EXPRESS: '快递发货',
+    SELF_PICKUP: '到店自提',
+  },
+  // 订单列表 tab（AFTER_SALE = 有未处理售后单的订单，后端按此分组过滤）
   orderTabs: [
     { key: '', label: '全部' },
+    { key: 'PENDING_PAY', label: '未付款' },
     { key: 'PAID_UNSHIPPED', label: '未发货' },
-    { key: 'SHIPPED', label: '已发货' },
+    { key: 'SHIPPED', label: '待收货' },
+    { key: 'COMPLETED', label: '已完成' },
+    { key: 'AFTER_SALE', label: '退款/售后' },
   ],
 }
 

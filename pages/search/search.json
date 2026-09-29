@@ -3,6 +3,7 @@
   "usingComponents": {
     "search-bar": "/components/search-bar/search-bar",
     "state-view": "/components/state-view/state-view",
-    "goods-card": "/components/goods-card/goods-card"
+    "goods-card": "/components/goods-card/goods-card",
+    "icon": "/components/icon/icon"
   }
 }

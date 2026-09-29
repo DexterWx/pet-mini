@@ -1,26 +1,28 @@
 // pages/index/index.js
-// 首页：banner + 功能入口 + 为您推荐。页面不写死业务数据，全部来自 services。
+// 首页：banner + 功能入口。页面不写死业务数据，全部来自 services。
 const homeService = require('../../services/home.service')
-const productService = require('../../services/product.service')
-const cartService = require('../../services/cart.service')
 const router = require('../../utils/router')
 
 Page({
   data: {
     homeStatus: 'loading',
-    recStatus: 'loading',
     banners: [],
     entries: { squares: [], promos: [] },
-    recommend: [],
   },
 
   onLoad () {
     this.loadHome()
-    this.loadRecommend()
+  },
+
+  // 自定义 tabBar：每次展示时同步选中态（下标须与 app.json tabBar.list 一致）
+  onShow () {
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 0 })
+    }
   },
 
   onPullDownRefresh () {
-    Promise.all([this.loadHome(), this.loadRecommend()])
+    this.loadHome()
       .then(() => wx.stopPullDownRefresh())
       .catch(() => wx.stopPullDownRefresh())
   },
@@ -31,7 +33,9 @@ Page({
     return Promise.all([
       homeService.getBannersSWR(c => { this.setData({ banners: c }); onCache() }),
       homeService.getEntriesSWR(c => { this.setData({ entries: c }); onCache() }),
-    ]).then(([banners, entries]) => {
+    ]).then(res => {
+      const banners = res[0]
+      const entries = res[1]
       const b = banners || []
       const e = entries || { squares: [], promos: [] }
       const empty = !b.length && !e.squares.length && !e.promos.length
@@ -41,18 +45,14 @@ Page({
     })
   },
 
-  loadRecommend () {
-    this.setData({ recStatus: 'loading' })
-    return productService.getRecommend().then(list => {
-      const l = list || []
-      this.setData({ recommend: l, recStatus: l.length ? 'ok' : 'empty' })
-    }).catch(() => {
-      this.setData({ recStatus: 'error' })
-    })
-  },
-
   goSearch () {
     router.navigate('/pages/search/search')
+  },
+
+  // 点广告牌：配了关联商品则直达商品详情，否则不跳
+  onBannerTap (e) {
+    const id = e.currentTarget.dataset.id
+    if (id) router.navigate('/pages/goods/detail?id=' + id)
   },
 
   onSquare (e) {
@@ -62,20 +62,8 @@ Page({
   },
 
   onPromo (e) {
+    // 首页已取消“联系我们”入口（客服入口在商品详情底栏与「我的」页），当前仅充值
     const key = e.currentTarget.dataset.key
-    if (key === 'contact') router.navigate('/pages/contact/contact')
-    else if (key === 'recharge') router.goRequireLogin('/pages/recharge/recharge')
-  },
-
-  onCardTap (e) {
-    router.navigate('/pages/goods/detail?id=' + e.detail.id)
-  },
-
-  onCardAdd (e) {
-    cartService.add(e.detail.id, 1).then(() => {
-      wx.showToast({ title: '已加入购物车', icon: 'success' })
-    }).catch(err => {
-      if (err.code !== 401) wx.showToast({ title: err.message || '加入失败', icon: 'none' })
-    })
+    if (key === 'recharge') router.goRequireLogin('/pages/recharge/recharge')
   },
 })

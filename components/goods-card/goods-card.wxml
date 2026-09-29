@@ -7,7 +7,7 @@
     </view>
     <view class="gc-meta-row">
       <text class="gc-sold">已售{{goods.sold}}件</text>
-      <view class="gc-add" catchtap="onAdd" hover-class="gc-add-hover">🛒</view>
+      <view class="gc-add" catchtap="onAdd" hover-class="gc-add-hover"><icon name="cart" size="30" color="#1F1D1B" /></view>
     </view>
   </view>
 </view>

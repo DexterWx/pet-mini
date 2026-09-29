@@ -1,5 +1,5 @@
 <view class="sb" bindtap="onTap">
-  <view class="sb-icon">🔍</view>
+  <view class="sb-icon"><icon name="search" size="30" color="#8B857C" /></view>
   <input
     wx:if="{{!readonly}}"
     class="sb-input"

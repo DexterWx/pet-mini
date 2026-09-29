@@ -30,8 +30,11 @@
 
 .d-info {
   background: var(--color-card);
+  border: var(--edge-width) solid var(--color-edge);
+  border-radius: var(--radius);
   padding: 24rpx;
-  margin-top: 12rpx;
+  margin: 12rpx 24rpx 0;
+  box-shadow: var(--shadow-card);
 }
 
 .d-price {
@@ -67,6 +70,22 @@
   margin-right: 32rpx;
 }
 
+/* 包邮/运费标识（规则来自 /shipping/config）
+   .d-info 为普通 block，必须 inline-block 才能按内容宽度自适应，
+   否则 view 会撑满整行变成通栏色块 */
+.d-ship {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  width: fit-content;
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  border-radius: var(--radius-xs);
+  padding: 10rpx 16rpx;
+}
+
 .d-bar {
   position: fixed;
   left: 0;
@@ -75,11 +94,13 @@
   display: flex;
   align-items: center;
   background: var(--color-card);
-  padding: 12rpx 16rpx;
-  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.05);
+  border-top: var(--edge-width) solid var(--color-edge);
+  padding: 12rpx 16rpx calc(12rpx + env(safe-area-inset-bottom));
+  box-shadow: var(--shadow-bar);
 }
 
 .d-bar-icon {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -90,8 +111,37 @@
   color: var(--color-primary);
 }
 
+/* 客服点击层：微信原生 button 的 UA 样式（固定 height、margin:auto、宽度行为等）
+   无法完全重置，改用绝对定位透明覆盖层——它不参与底栏 flex 布局，
+   因此图标列与普通 view 列宽度完全一致，不会撑宽把右侧按钮挤到溢出 */
+.d-bar-hit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  line-height: normal;
+  font-size: 0;
+}
+
+.d-bar-hit::after {
+  border: none;
+}
+
 .d-bar-emoji {
-  font-size: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40rpx;
 }
 
 .d-bar-label {
@@ -102,7 +152,9 @@
 
 .d-bar-btn {
   flex: 1;
+  min-width: 0;
   text-align: center;
+  white-space: nowrap;
   color: #fff;
   font-size: 28rpx;
   padding: 20rpx 0;
@@ -110,7 +162,7 @@
 }
 
 .d-bar-btn.add {
-  background: #8B7BE8;
+  background: var(--color-ink-soft);
   border-radius: 999rpx 0 0 999rpx;
 }
 
@@ -118,6 +170,7 @@
   background: var(--color-primary);
   border-radius: 0 999rpx 999rpx 0;
   margin-left: 0;
+  font-weight: 600;
 }
 
 .d-bar-btn-hover {

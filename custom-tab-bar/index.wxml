@@ -1,0 +1,16 @@
+<view class="tabbar">
+  <view class="tabbar-inner">
+    <view
+      class="tab {{selected === index ? 'on' : ''}}"
+      wx:for="{{list}}"
+      wx:key="text"
+      data-index="{{index}}"
+      data-path="{{item.pagePath}}"
+      bindtap="onTab"
+      hover-class="tab-hover"
+    >
+      <icon name="{{item.icon}}" size="38" color="{{selected === index ? '#FFFFFF' : '#1F1D1B'}}" />
+      <text class="tab-text">{{item.text}}</text>
+    </view>
+  </view>
+</view>

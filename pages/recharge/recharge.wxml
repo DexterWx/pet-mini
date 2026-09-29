@@ -9,26 +9,27 @@
     </view>
 
     <view class="card r-card">
-      <text class="r-label">充值金额(元)</text>
-      <view class="r-input-row">
-        <text class="r-yuan">¥</text>
-        <input class="r-input" type="digit" placeholder="请输入充值金额" value="{{amount}}" bindinput="onAmount" />
-      </view>
+      <text class="r-label">选择充值档位</text>
       <view class="r-tiers">
         <view
-          class="r-tier"
+          class="r-tier {{selectedId === item.id ? 'active' : ''}}"
           wx:for="{{tiers}}"
-          wx:key="thresholdFen"
-          data-threshold="{{item.thresholdFen}}"
+          wx:key="id"
+          data-id="{{item.id}}"
           bindtap="onTier"
         >
           <text class="r-tier-label">{{item.label}}</text>
           <text class="r-tier-sub">{{item.sub}}</text>
         </view>
       </view>
-      <view class="r-gift" wx:if="{{giftText !== '0'}}">预计赠送 ¥{{giftText}}</view>
+      <view class="r-empty-tip" wx:if="{{!tiers.length}}">管理员尚未配置充值档位，敬请期待</view>
+      <view class="r-summary" wx:if="{{selectedId}}">
+        <text>实充 ¥{{amountText}}</text>
+        <text class="r-gift" wx:if="{{giftText !== '0'}}">赠 ¥{{giftText}}</text>
+        <text class="r-total">到账合计 ¥{{totalText}}</text>
+      </view>
     </view>
 
-    <view class="btn-primary r-pay" bindtap="onPay" hover-class="btn-primary-hover">去支付</view>
+    <view class="btn-primary r-pay" bindtap="onPay" hover-class="btn-primary-hover">{{payText}}</view>
   </state-view>
 </view>

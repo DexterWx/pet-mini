@@ -1,20 +1,54 @@
 /* assets/styles/theme.wxss
-   主题变量：业务代码通过 var(--x) 引用，后期换肤/换资源只改这里。 */
+   品牌设计令牌（全项目唯一颜色来源，pet-web 的 global.css 保持同名变量同值）。
+   视觉基调：熊猫配色 —— 奶白底 + 黑边 + 纯黑强调，圆角、克制、现代。
+   业务代码只允许通过 var(--x) 引用，禁止新硬编码色值；换肤只改本文件。 */
 page {
-  --color-primary: #F0413E;
-  --color-primary-light: #FDECEB;
-  --color-text: #333333;
-  --color-text-sub: #999999;
-  --color-bg: #F6F6F6;
+  /* 熊猫黑：主按钮 / 卡片描边 / 价格 / 选中态 */
+  --color-primary: #1F1D1B;
+  --color-primary-deep: #0E0D0C;
+  --color-ink-soft: #45403A;             /* 柔黑：次级实底（加购半块 / 深灰文本） */
+  --color-primary-light: #F1ECE2;        /* 选中底：奶白偏暖 */
+
+  /* 奶白与纸感 */
+  --color-accent: #1F1D1B;               /* 熊猫体系不引入彩色点缀，保持黑白 */
+  --color-success: #4F6B4F;              /* 墨绿：极少量成功态 */
+  --color-warning: #A8863C;
+  --color-error: #8E3B2E;
+
+  /* 中性色 */
+  --color-text: #1F1D1B;
+  --color-text-sub: #8B857C;
+  --color-bg: #FBF9F4;                   /* 页面奶白底 */
+  --color-bg-soft: #F3EFE6;              /* 更深的奶白：标签 / 输入底 */
+  --color-cream: #FFFDF8;                /* 入口块奶白填充 */
   --color-card: #FFFFFF;
-  --color-border: #EEEEEE;
+  --color-border: #E7E1D6;               /* 细线：分隔 */
+  --color-edge: #1F1D1B;                 /* 黑边：卡片 / 按钮描边 */
+  --edge-width: 2rpx;                    /* 统一描边粗细 */
 
-  /* 首页米色系 */
-  --color-home-bg: #F5EFE0;
-  --color-home-tan: #C8A882;
-  --color-home-yellow: #E9C250;
+  /* 熊猫黑渐变：页头 / 状态头 / 余额卡 */
+  --gradient-brand: linear-gradient(135deg, #3B3630 0%, #1C1A17 60%, #100F0D 100%);
 
-  --radius-sm: 8rpx;
-  --radius: 16rpx;
-  --radius-lg: 24rpx;
+  /* 圆角：熊猫偏圆润 */
+  --radius-xs: 8rpx;
+  --radius-sm: 14rpx;
+  --radius: 22rpx;
+  --radius-lg: 30rpx;
+  --radius-sheet: 32rpx;
+
+  /* 阴影：熊猫风格靠描边立形，阴影极轻 */
+  --shadow-card: 0 2rpx 8rpx rgba(31, 29, 27, 0.04);
+  --shadow-bar: 0 -4rpx 16rpx rgba(31, 29, 27, 0.06);
+  --shadow-btn: none;
+
+  /* 间距节拍 */
+  --space-xs: 8rpx;
+  --space-sm: 16rpx;
+  --space: 24rpx;
+  --space-lg: 32rpx;
+  --space-xl: 48rpx;
+
+  /* 兼容别名：旧样式引用 */
+  --color-home-bg: #FBF9F4;
+  --color-home-tan: #FFFDF8;
 }

@@ -1,5 +1,6 @@
 // pages/recharge/recharge.js
-// 余额充值：档位来自 API；支付走独立 Payment Service(Mock)，成功后调用充值接口加余额。
+// 余额充值：金额与赠送额均来自管理后台配置的档位，用户只能点选（不可自输金额）。
+// 支付走真实微信支付（本地 PAYMENT_PROVIDER=mock 时后端即时入账），到账一律以服务端为准。
 const userService = require('../../services/user.service')
 const paymentService = require('../../services/payment.service')
 const router = require('../../utils/router')
@@ -10,8 +11,12 @@ Page({
     status: 'loading',
     balanceText: '0',
     tiers: [],
-    amount: '',
+    selectedId: null,
+    amountText: '0',
     giftText: '0',
+    totalText: '0',
+    payText: '请选择充值档位',
+    paying: false,
   },
 
   onShow () {
@@ -24,62 +29,70 @@ Page({
 
   load () {
     this.setData({ status: 'loading' })
-    Promise.all([userService.getBalance(), userService.getRechargeTiers()]).then(([balance, tiers]) => {
+    Promise.all([userService.getBalance(), userService.getRechargeTiers()]).then(res => {
+      const balance = res[0] || { balanceFen: 0 }
+      const tiers = res[1] || []
       this.setData({
         balanceText: format.formatPrice(balance.balanceFen),
-        tiers: tiers || [],
-        status: 'ok',
+        tiers: tiers,
+        status: tiers.length ? 'ok' : 'empty',
       })
-      this.recomputeGift()
+      // 默认选中第一个档位，减少一次点击
+      this._selectTier(tiers.length ? tiers[0] : null)
     }).catch(() => {
       this.setData({ status: 'error' })
     })
   },
 
-  onAmount (e) {
-    this.setData({ amount: e.detail.value })
-    this.recomputeGift()
-  },
-
   onTier (e) {
-    const fen = Number(e.currentTarget.dataset.threshold)
-    this.setData({ amount: String(fen / 100) })
-    this.recomputeGift()
+    const id = e.currentTarget.dataset.id
+    const tier = this.data.tiers.filter(t => t.id === id)[0]
+    if (tier) this._selectTier(tier)
   },
 
-  recomputeGift () {
-    const amountFen = format.yuanToFen(this.data.amount)
-    let giftFen = 0
-    ;(this.data.tiers || []).forEach(t => {
-      if (amountFen >= t.thresholdFen && t.giftFen > giftFen) giftFen = t.giftFen
+  // 按选定档位刷新明细：实充 / 赠送 / 到账合计（金额单位为分，展示转元）
+  _selectTier (tier) {
+    if (!tier) {
+      this.setData({ selectedId: null, amountText: '0', giftText: '0', totalText: '0', payText: '请选择充值档位' })
+      return
+    }
+    this.selectedTier = tier
+    const amountText = format.formatPrice(tier.thresholdFen)
+    const giftText = format.formatPrice(tier.giftFen)
+    const totalText = format.formatPrice(tier.thresholdFen + tier.giftFen)
+    this.setData({
+      selectedId: tier.id,
+      amountText: amountText,
+      giftText: giftText,
+      totalText: totalText,
+      payText: '微信支付 ¥' + amountText + '　到账 ¥' + totalText,
     })
-    this.giftFen = giftFen
-    this.setData({ giftText: format.formatPrice(giftFen) })
   },
 
   onPay () {
-    const amountFen = format.yuanToFen(this.data.amount)
-    if (amountFen <= 0) {
-      wx.showToast({ title: '请输入充值金额', icon: 'none' })
+    const tier = this.selectedTier
+    if (!tier) {
+      wx.showToast({ title: '请先选择充值档位', icon: 'none' })
       return
     }
-    paymentService.pay({ amountFen }).then(r => {
-      if (r.result === 'success') {
-        userService.recharge(amountFen, this.giftFen || 0).then(() => {
-          wx.showToast({ title: '充值成功', icon: 'success' })
-          this.load()
-        }).catch(err => {
-          if (err.code !== 401) wx.showToast({ title: err.message || '充值失败', icon: 'none' })
-        })
-      } else if (r.result === 'fail') {
-        wx.showToast({ title: '支付失败，请重试', icon: 'none' })
+    if (this.data.paying) return
+    this.setData({ paying: true })
+    paymentService.payRecharge(tier.id).then(r => {
+      this.setData({ paying: false })
+      if (r.paid) {
+        wx.showToast({ title: '充值成功', icon: 'success' })
+        this.load()
       } else {
-        wx.showToast({ title: '已取消支付', icon: 'none' })
+        wx.showToast({ title: '支付未完成，如已扣款请稍后查看余额', icon: 'none' })
+        this.load()
       }
+    }).catch(err => {
+      this.setData({ paying: false })
+      if (err && err.code !== 401) wx.showToast({ title: err.message || '充值失败', icon: 'none' })
     })
   },
 
   onRecords () {
-    wx.showToast({ title: '充值记录即将上线', icon: 'none' })
+    router.navigate('/pages/recharge/records')
   },
 })

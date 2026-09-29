@@ -1,0 +1,56 @@
+/* custom-tab-bar/index.wxss
+   熊猫配色底栏：奶白胶囊 + 黑边，选中为纯黑实底白字。
+   注意：自定义 tabBar 不继承 page 上的 CSS 变量，以下色值需与
+   assets/styles/theme.wxss 保持一致（换肤时两处同改）。 */
+.tabbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background: #fbf9f4;
+  border-top: 2rpx solid #1f1d1b;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 整栏高度 120rpx（不含安全区）：各 tab 页的底部留白/固定条偏移以此为准 */
+.tabbar-inner {
+  height: 120rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 0 16rpx;
+}
+
+.tab {
+  flex: 1;
+  min-width: 0;
+  height: 96rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4rpx;
+  background: #fffdf8;
+  border: 2rpx solid #1f1d1b;
+  border-radius: 22rpx;
+}
+
+.tab.on {
+  background: #1f1d1b;
+}
+
+.tab-hover {
+  opacity: 0.85;
+}
+
+.tab-text {
+  font-size: 22rpx;
+  line-height: 1.2;
+  color: #1f1d1b;
+}
+
+.tab.on .tab-text {
+  color: #fff;
+  font-weight: 600;
+}

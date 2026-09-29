@@ -6,13 +6,14 @@
     </view>
 
     <view class="login-form">
-      <view
+      <button
         class="btn-primary login-btn {{logging ? 'login-btn-disabled' : ''}}"
-        bindtap="onWechatLogin"
+        open-type="getPhoneNumber"
+        bindgetphonenumber="onGetPhoneNumber"
         hover-class="btn-primary-hover"
-      >{{logging ? '登录中…' : '微信一键登录'}}</view>
+      >{{logging ? '登录中…' : '微信一键登录'}}</button>
 
-      <view class="login-tip">登录即表示同意《用户协议》与《隐私政策》</view>
+      <view class="login-tip">登录需授权手机号，仅用于下单联系与售后；登录即表示同意《用户协议》与《隐私政策》</view>
       <view class="login-skip" bindtap="onSkip">暂不登录</view>
     </view>
   </block>

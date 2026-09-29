@@ -1,6 +1,6 @@
 // pages/login/login.js
 // 微信一键登录：wx.login -> 后端按 openid 找/建用户 -> 保存 Token 并回跳 redirect。
-// 头像昵称仅首次登录时请求授权采集一次（step='profile'），入库 + 本地缓存后后续登录直接使用，不再重复询问。
+// 昵称仅首次登录采集一次（step='profile'）并入库；头像仅本地缓存展示（不入库）。
 const authService = require('../../services/auth.service')
 const userService = require('../../services/user.service')
 const router = require('../../utils/router')
@@ -9,7 +9,7 @@ Page({
   data: {
     redirect: '',
     logging: false,
-    // login：微信一键登录；profile：首次登录补全头像昵称（仅第一次会出现）
+    // login：微信一键登录；profile：首次登录补全昵称（仅第一次会出现）
     step: 'login',
     userId: '',
     avatar: '',
@@ -21,17 +21,24 @@ Page({
     this.setData({ redirect: options.redirect || '' })
   },
 
-  onWechatLogin () {
+  // 手机号授权登录：主按钮为 open-type="getPhoneNumber"，用户同意后才拿到 phoneCode
+  onGetPhoneNumber (e) {
     if (this.data.logging) return
+    const detail = e.detail || {}
+    // 未同意授权（无 code）：不允许登录
+    if (!detail.code) {
+      wx.showToast({ title: '需授权手机号后才能登录', icon: 'none' })
+      return
+    }
     this.setData({ logging: true })
-    authService.login().then(session => {
+    authService.login(detail.code).then(session => {
       const user = (session && session.user) || {}
       // 非首次：服务端资料已完整或本地已缓存（含曾主动跳过），直接进入，不再请求授权
       if (!authService.profileSetupNeeded(user)) {
         this._finish('登录成功')
         return
       }
-      // 首次登录：请求一次头像昵称授权（微信“头像昵称填写能力”需用户主动点击，无法静默获取）
+      // 首次登录：请求一次昵称采集（头像仅本地）
       const cache = authService.getCachedProfile(user.id) || {}
       this.setData({
         logging: false,
@@ -59,16 +66,14 @@ Page({
     if (this.data.saving) return
     const nickname = (this.data.nickname || '').trim()
     const avatar = this.data.avatar || ''
-    if (!nickname && !avatar) {
-      wx.showToast({ title: '请设置头像或昵称', icon: 'none' })
+    if (!nickname) {
+      wx.showToast({ title: '请设置昵称', icon: 'none' })
       return
     }
     this.setData({ saving: true })
-    // 昵称为空时不传，避开后端“昵称不能为空”校验（只授权头像也算完成采集）
-    const payload = { avatar }
-    if (nickname) payload.nickname = nickname
-    userService.updateProfile(payload).then(user => {
-      authService.saveProfileCache(user)
+    // 昵称入库；头像写本地缓存展示（不上传）
+    userService.updateProfile({ nickname }).then(user => {
+      authService.saveProfileCache({ userId: user.id, nickname: user.nickname, avatar })
       this._finish('已设置完成')
     }).catch(err => {
       this.setData({ saving: false })

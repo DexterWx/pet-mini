@@ -1,0 +1,21 @@
+<view class="rec">
+  <state-view status="{{status}}" empty-text="暂无充值记录" bind:retry="load">
+    <view class="rec-list">
+      <view class="rec-item" wx:for="{{list}}" wx:key="id">
+        <view class="rec-left">
+          <text class="rec-time">{{item.timeText}}</text>
+          <text class="rec-sub">微信充值</text>
+        </view>
+        <view class="rec-right">
+          <text class="rec-amount">+¥{{item.totalText}}</text>
+          <text class="rec-sub">实充 ¥{{item.amountText}}{{item.giftFen > 0 ? '　赠 ¥' + item.giftText : ''}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="rec-more" wx:if="{{!hasMore && list.length}}">— 没有更多了 —</view>
+  </state-view>
+
+  <view class="rec-empty-btn" wx:if="{{status === 'empty'}}">
+    <view class="btn-primary" bindtap="goRecharge" hover-class="btn-primary-hover">去充值</view>
+  </view>
+</view>

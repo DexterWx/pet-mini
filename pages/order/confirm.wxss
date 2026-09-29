@@ -5,9 +5,11 @@
 .c-line {
   display: flex;
   background: var(--color-card);
+  border: var(--edge-width) solid var(--color-edge);
   border-radius: var(--radius);
   padding: 20rpx;
   margin-bottom: 20rpx;
+  box-shadow: var(--shadow-card);
 }
 
 .c-img {
@@ -51,13 +53,39 @@
   font-size: 26rpx;
 }
 
-.c-total {
+/* 金额明细：商品金额 + 运费 = 合计（.card 已提供背景与内边距） */
+.c-amounts {
+  margin-top: 24rpx;
+}
+
+.c-amt-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--color-text);
+  font-size: 26rpx;
+  line-height: 2;
+}
+
+.c-amt-free {
+  color: var(--color-primary);
+}
+
+.c-amt-total {
+  margin-top: 8rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid var(--color-border);
+  font-size: 28rpx;
+}
+
+.c-amt-tip {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 24rpx;
-  color: var(--color-text);
-  font-size: 28rpx;
+  gap: 6rpx;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: var(--color-text-sub);
 }
 
 .c-total-num {
@@ -67,6 +95,93 @@
   margin-left: 16rpx;
 }
 
+.c-pay-tip {
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  color: var(--color-text-sub);
+}
+
+.c-pay-tip.warn {
+  color: var(--color-primary);
+}
+
+.c-delivery-opt.disabled {
+  opacity: 0.4;
+}
+
 .c-submit {
   margin-top: 40rpx;
+  font-weight: 600;
+  letter-spacing: 2rpx;
+}
+
+.card {
+  background: var(--color-card);
+  border: var(--edge-width) solid var(--color-edge);
+  border-radius: var(--radius);
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: var(--shadow-card);
+}
+
+.c-addr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.c-addr-line1 {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.c-addr-line2 {
+  margin-top: 8rpx;
+  font-size: 26rpx;
+  color: var(--color-text-sub);
+}
+
+.c-addr-empty {
+  font-size: 28rpx;
+  color: var(--color-primary);
+}
+
+.c-addr-edit {
+  font-size: 26rpx;
+  color: var(--color-text-sub);
+  padding-left: 24rpx;
+}
+
+.c-delivery {
+  display: flex;
+  align-items: center;
+}
+
+.c-delivery-label {
+  font-size: 28rpx;
+  color: var(--color-text);
+  margin-right: 24rpx;
+}
+
+.c-delivery-opts {
+  display: flex;
+  flex: 1;
+}
+
+.c-delivery-opt {
+  padding: 8rpx 30rpx;
+  margin-right: 20rpx;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  color: var(--color-text-sub);
+  background: var(--color-cream);
+  border: var(--edge-width) solid transparent;
+}
+
+.c-delivery-opt.active {
+  color: #fff;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  font-weight: 600;
 }

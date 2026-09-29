@@ -1,5 +1,6 @@
 .cat {
-  height: 100vh;
+  /* 分类页为整屏 flex 布局，需扣掉自定义 tabBar 的高度，否则商品列表底部被盖 */
+  height: calc(100vh - 120rpx - env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   background: var(--color-bg);
@@ -7,7 +8,7 @@
 
 .cat-search {
   padding: 16rpx 24rpx;
-  background: #fff;
+  background: var(--color-card);
 }
 
 .cat-body {
@@ -19,7 +20,7 @@
 .cat-side {
   width: 200rpx;
   height: 100%;
-  background: #fff;
+  background: var(--color-card);
 }
 
 .cat-item {

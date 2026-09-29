@@ -23,9 +23,9 @@ function clearSession () {
 // 结果同时写服务端（/user/profile）与本缓存，之后登录与展示直接复用，不再重复请求。
 // 注意：chooseAvatar 返回的是临时文件路径，接真实后端后应先上传换取正式 URL 再缓存。
 
-// 资料是否已完整（以服务端快照为准）
+// 资料是否已完整（以服务端快照为准；头像不入库，故只看昵称）
 function isProfileReady (user) {
-  return !!(user && user.nickname && user.avatar)
+  return !!(user && user.nickname)
 }
 
 // 读取缓存；传入 userId 时做归属校验，避免换账号串号
@@ -51,16 +51,16 @@ function saveProfileCache (profile) {
   })
 }
 
-// 登录时是否还需要采集头像昵称：服务端已完整或本地已缓存/已主动跳过 → 不需要（直接用，不打扰）
+// 登录时是否还需要采集昵称：服务端已有昵称或本地已缓存/已主动跳过 → 不需要（不打扰）
 function profileSetupNeeded (user) {
   if (isProfileReady(user)) {
-    saveProfileCache(user)
+    saveProfileCache({ userId: user.id, nickname: user.nickname })
     return false
   }
   const cache = getCachedProfile(user && user.id)
   if (!cache) return true
   if (cache.skipped) return false
-  return !(cache.nickname || cache.avatar)
+  return !cache.nickname
 }
 
 // 调用 wx.login 获取临时登录凭证 code
@@ -73,12 +73,11 @@ function getCode () {
   })
 }
 
-// 微信登录：拿到 code 交给后端换取登录态（后端完成 code2Session + 找/建用户）
-function login () {
+// 微信登录：wx.login 拿 code + getPhoneNumber 授权码 phoneCode 一起交后端（后端需手机号才能登录）
+function login (phoneCode) {
   return getCode().then(code => {
-    // 真实环境必须拿到 code；Mock 环境后端不校验 code，可放行以便演示
-    if (!code && !config.useMock) throw new Error('微信登录失败，请重试')
-    return request({ url: '/auth/wechat-login', method: 'POST', data: { code }, loading: true })
+    if (!code) throw new Error('微信登录失败，请重试')
+    return request({ url: '/auth/wechat-login', method: 'POST', data: { code, phoneCode: phoneCode || '' }, loading: true })
   }).then(session => { saveSession(session); return session })
 }
 
@@ -103,7 +102,8 @@ function fetchProfile () {
   return request({ url: '/auth/profile', auth: true })
     .then(user => {
       storage.set(config.storageKeys.user, user)
-      if (isProfileReady(user)) saveProfileCache(user)
+      // 头像不入库，仅缓存昵称（保留本地头像，不用服务端空头像覆盖）
+      if (user && user.nickname) saveProfileCache({ userId: user.id, nickname: user.nickname })
       return user
     })
 }

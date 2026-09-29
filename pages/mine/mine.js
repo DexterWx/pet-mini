@@ -1,12 +1,9 @@
 // pages/mine/mine.js
-// 我的/会员中心：需登录。余额/积分/券为服务端数据；最近浏览为本地 UX 数据。
+// 我的/会员中心：需登录。余额为服务端数据；最近浏览为本地 UX 数据；在线客服用原生 contact 按钮。
 const authService = require('../../services/auth.service')
 const userService = require('../../services/user.service')
 const productService = require('../../services/product.service')
-const contactService = require('../../services/contact.service')
 const router = require('../../utils/router')
-const storage = require('../../utils/storage')
-const config = require('../../config/index')
 const format = require('../../utils/format')
 
 Page({
@@ -15,14 +12,13 @@ Page({
     profileStatus: 'loading',
     user: null,
     balanceText: '0',
-    points: 0,
-    coupons: 0,
     recent: [],
-    mockFail: false,
   },
 
   onShow () {
-    this.setData({ mockFail: storage.get(config.storageKeys.mockFail, false) })
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selected: 3 })
+    }
     if (!router.isLoggedIn()) {
       this.setData({ needLogin: true, user: null })
       return
@@ -43,19 +39,17 @@ Page({
       this.setData({
         user: { nickname: cached.nickname || '', avatar: cached.avatar || '' },
         balanceText: '—',
-        points: '—',
-        coupons: '—',
         profileStatus: 'ok',
       })
     } else {
       this.setData({ profileStatus: 'loading' })
     }
-    Promise.all([authService.fetchProfile(), userService.getBalance()]).then(([user, balance]) => {
+    Promise.all([authService.fetchProfile(), userService.getBalance()]).then(res => {
+      const user = res[0]
+      const balance = res[1]
       this.setData({
         user,
         balanceText: format.formatPrice(balance.balanceFen),
-        points: balance.points,
-        coupons: balance.coupons,
         profileStatus: 'ok',
       })
     }).catch(() => {
@@ -91,12 +85,12 @@ Page({
     router.goRequireLogin('/pages/recharge/recharge')
   },
 
-  goContact () {
-    router.navigate('/pages/contact/contact')
+  goAddress () {
+    router.goRequireLogin('/pages/address/list')
   },
 
-  onService () {
-    contactService.openCustomerService()
+  goFavorites () {
+    router.goRequireLogin('/pages/favorites/favorites')
   },
 
   onRecentTap (e) {
@@ -113,12 +107,5 @@ Page({
         wx.showToast({ title: '已退出登录', icon: 'none' })
       },
     })
-  },
-
-  onMockFailChange (e) {
-    const val = e.detail.value
-    storage.set(config.storageKeys.mockFail, val)
-    this.setData({ mockFail: val })
-    wx.showToast({ title: val ? '已开启模拟接口失败' : '已关闭模拟接口失败', icon: 'none' })
   },
 })

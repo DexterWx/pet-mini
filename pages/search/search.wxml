@@ -14,7 +14,7 @@
     <view class="history" wx:if="{{history.length}}">
       <view class="history-head">
         <text class="history-title">最近搜索</text>
-        <text class="history-clear" bindtap="onClearHistory">🗑</text>
+        <view class="history-clear" bindtap="onClearHistory"><icon name="trash" size="30" color="#8B857C" /></view>
       </view>
       <view class="history-tags">
         <view class="tag" wx:for="{{history}}" wx:key="*this" data-kw="{{item}}" bindtap="onHistoryTap">{{item}}</view>

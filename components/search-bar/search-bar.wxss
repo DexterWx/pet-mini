@@ -4,29 +4,30 @@
   height: 68rpx;
   padding: 0 24rpx;
   border-radius: 999rpx;
-  background: #EDEDED;
+  background: var(--color-cream, #FFFDF8);
+  border: var(--edge-width, 2rpx) solid var(--color-edge, #1F1D1B);
 }
 
 .sb-icon {
   font-size: 28rpx;
   margin-right: 12rpx;
-  color: var(--color-text-sub, #999);
+  color: var(--color-text-sub, #8B857C);
 }
 
 .sb-input {
   flex: 1;
   font-size: 28rpx;
-  color: var(--color-text, #333);
+  color: var(--color-text, #1F1D1B);
 }
 
 .sb-ph {
   flex: 1;
   font-size: 28rpx;
-  color: var(--color-text-sub, #999);
+  color: var(--color-text-sub, #8B857C);
 }
 
 .sb-clear {
   padding: 0 12rpx;
-  color: var(--color-text-sub, #999);
+  color: var(--color-text-sub, #8B857C);
   font-size: 32rpx;
 }

@@ -1,6 +1,6 @@
 // pages/profile/profile.js
-// 编辑资料：使用微信“头像昵称填写能力”采集头像与昵称并保存。
-// 首次登录已在登录页采集过一次，本页是后续的修改入口。
+// 编辑资料：使用微信“头像昵称填写能力”采集头像与昵称。
+// 昵称存服务端；头像仅存本地缓存供本人展示（不入库）。
 const authService = require('../../services/auth.service')
 const userService = require('../../services/user.service')
 
@@ -8,20 +8,22 @@ Page({
   data: {
     avatar: '',
     nickname: '',
+    phone: '',
     saving: false,
   },
 
   onLoad () {
-    // 优先用已缓存的头像昵称（首次登录采集结果），避免用户重复输入
-    const cached = authService.getCachedProfile()
+    // 优先用本地缓存的头像（不入库），昵称/手机号以快照为准
+    const cached = authService.getCachedProfile() || {}
     const user = authService.getCachedUser() || {}
     this.setData({
-      avatar: user.avatar || (cached && cached.avatar) || '',
-      nickname: user.nickname || (cached && cached.nickname) || '',
+      avatar: cached.avatar || user.avatar || '',
+      nickname: user.nickname || cached.nickname || '',
+      phone: user.phone || '',
     })
   },
 
-  // 选择头像：返回临时文件路径（真实环境需先 wx.uploadFile 上传换取正式 URL 再提交）
+  // 选择头像：仅本地保存（临时路径），不上传后端
   onChooseAvatar (e) {
     this.setData({ avatar: e.detail.avatarUrl })
   },
@@ -39,14 +41,30 @@ Page({
     }
     if (this.data.saving) return
     this.setData({ saving: true })
-    userService.updateProfile({ nickname, avatar: this.data.avatar }).then(user => {
-      // 同步刷新头像昵称缓存，保证后续登录直接使用最新资料
-      authService.saveProfileCache(user)
+    // 昵称存服务端；头像写本地缓存供展示
+    userService.updateProfile({ nickname }).then(user => {
+      authService.saveProfileCache({ userId: user.id, nickname: user.nickname, avatar: this.data.avatar })
       wx.showToast({ title: '保存成功', icon: 'success' })
       setTimeout(() => wx.navigateBack(), 600)
     }).catch(err => {
       this.setData({ saving: false })
       if (err.code !== 401) wx.showToast({ title: err.message || '保存失败', icon: 'none' })
+    })
+  },
+
+  // 换绑手机号：重新走微信 getPhoneNumber 授权（只能取当前微信号绑定的号）
+  onRebindPhone (e) {
+    const detail = e.detail || {}
+    if (!detail.code) {
+      wx.showToast({ title: '需授权手机号', icon: 'none' })
+      return
+    }
+    userService.rebindPhone(detail.code).then(user => {
+      this.setData({ phone: user.phone || '' })
+      authService.saveProfileCache({ userId: user.id, nickname: user.nickname, avatar: this.data.avatar })
+      wx.showToast({ title: '已更新手机号', icon: 'success' })
+    }).catch(err => {
+      if (err.code !== 401) wx.showToast({ title: err.message || '换绑失败', icon: 'none' })
     })
   },
 })

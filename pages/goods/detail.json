@@ -2,6 +2,7 @@
   "navigationBarTitleText": "商品详情",
   "usingComponents": {
     "state-view": "/components/state-view/state-view",
-    "goods-image": "/components/goods-image/goods-image"
+    "goods-image": "/components/goods-image/goods-image",
+    "icon": "/components/icon/icon"
   }
 }

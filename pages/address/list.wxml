@@ -1,0 +1,62 @@
+<view class="addr-page">
+  <state-view status="{{status}}" empty-text="还没有收货地址" bind:retry="load">
+    <view class="addr-list">
+      <view class="addr-item card" wx:for="{{list}}" wx:key="id">
+        <view class="addr-main" data-id="{{item.id}}" bindtap="onEdit">
+          <view class="addr-line1">
+            <text>{{item.receiverName}} {{item.phone}}</text>
+            <text class="addr-tag" wx:if="{{item.isDefault}}">默认</text>
+          </view>
+          <view class="addr-line2">{{item.address || '（自提，未填写详细地址）'}}</view>
+        </view>
+        <view class="addr-ops">
+          <text class="addr-op" wx:if="{{!item.isDefault}}" data-id="{{item.id}}" catchtap="onSetDefault">设为默认</text>
+          <text class="addr-op" data-id="{{item.id}}" catchtap="onEdit">编辑</text>
+          <text class="addr-op addr-op-del" data-id="{{item.id}}" catchtap="onDelete">删除</text>
+        </view>
+      </view>
+    </view>
+  </state-view>
+
+  <view class="addr-add" wx:if="{{!editing}}">
+    <view class="btn-primary" bindtap="onAdd" hover-class="btn-primary-hover">新增收货地址</view>
+  </view>
+
+  <!-- 新增/编辑表单 -->
+  <view class="addr-form-mask" wx:if="{{editing}}" bindtap="onCancel"></view>
+  <view class="addr-form" wx:if="{{editing}}">
+    <view class="af-title">{{form.id ? '编辑地址' : '新增地址'}}</view>
+    <view class="af-row">
+      <text class="af-label">收货人</text>
+      <input class="af-input" data-key="receiverName" value="{{form.receiverName}}" bindinput="onInput" placeholder="请填写姓名" />
+    </view>
+    <view class="af-row">
+      <text class="af-label">手机号</text>
+      <input class="af-input" type="number" data-key="phone" value="{{form.phone}}" bindinput="onInput" placeholder="请填写联系电话" />
+    </view>
+    <view class="af-row">
+      <text class="af-label">省份</text>
+      <input class="af-input" data-key="province" value="{{form.province}}" bindinput="onInput" placeholder="如 广东省" />
+    </view>
+    <view class="af-row">
+      <text class="af-label">城市</text>
+      <input class="af-input" data-key="city" value="{{form.city}}" bindinput="onInput" placeholder="如 深圳市" />
+    </view>
+    <view class="af-row">
+      <text class="af-label">区/县</text>
+      <input class="af-input" data-key="district" value="{{form.district}}" bindinput="onInput" placeholder="如 南山区" />
+    </view>
+    <view class="af-row af-row-col">
+      <text class="af-label">详细地址</text>
+      <textarea class="af-textarea" data-key="detail" value="{{form.detail}}" bindinput="onInput" placeholder="街道、门牌号等（自提可不填）" />
+    </view>
+    <view class="af-row">
+      <text class="af-label">设为默认</text>
+      <switch class="af-switch" checked="{{form.isDefault}}" bindchange="onToggleDefault" color="#1F1D1B" />
+    </view>
+    <view class="af-btns">
+      <view class="af-btn af-btn-cancel" bindtap="onCancel">取消</view>
+      <view class="af-btn af-btn-save {{saving ? 'disabled' : ''}}" bindtap="onSave">保存</view>
+    </view>
+  </view>
+</view>

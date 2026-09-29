@@ -16,7 +16,7 @@
 
   <block wx:elif="{{status === 'empty'}}">
     <view class="sv-center">
-      <view class="ph ph-circle sv-icon">🐾</view>
+      <view class="ph ph-circle sv-icon"><icon name="paw" size="52" color="#C6BFB2" /></view>
       <text class="sv-tip">{{emptyText}}</text>
     </view>
   </block>

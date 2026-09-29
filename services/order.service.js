@@ -1,11 +1,15 @@
 // services/order.service.js
-// 订单：仅在支付成功后创建（状态=已付款未发货）。
-// 状态流转：PAID_UNSHIPPED -> REFUND_REQUESTED（用户申请退款，可撤回）-> CANCELLED（商家同意/直接取消）；或 -> SHIPPED（发货）。
+// 订单：下单即创建“待付款”订单（PENDING_PAY），支付成功后转 PAID_UNSHIPPED。
+// 发货/售后处理属商家侧，由管理系统（/api/v1/admin）处理，小程序不再提供。
 const { request } = require('../utils/request')
 
-// items: [{ productId, qty }]
-function createPaidOrder (items) {
-  return request({ url: '/orders/create', method: 'POST', auth: true, loading: true, data: { items } })
+// 下单：items [{productId, qty}] + { deliveryType, addressId } => 待付款订单
+function createOrder (items, options) {
+  const opts = options || {}
+  return request({
+    url: '/orders/create', method: 'POST', auth: true, loading: true,
+    data: { items, deliveryType: opts.deliveryType, addressId: opts.addressId },
+  })
 }
 
 // status 为空表示全部
@@ -17,24 +21,24 @@ function getDetail (id) {
   return request({ url: '/orders/' + id, auth: true })
 }
 
-// Demo：模拟卖家发货，演示状态流转
-function ship (id) {
-  return request({ url: '/orders/' + id + '/ship', method: 'POST', auth: true, loading: true })
+// 取消待付款订单：PENDING_PAY -> CLOSED
+function cancelOrder (id) {
+  return request({ url: '/orders/' + id + '/cancel', method: 'POST', auth: true, loading: true })
 }
 
-// 用户申请退款：PAID_UNSHIPPED -> REFUND_REQUESTED
+// 用户确认收货：SHIPPED -> COMPLETED（终态，此后不可自助退款）
+function confirmReceive (id) {
+  return request({ url: '/orders/' + id + '/confirm', method: 'POST', auth: true, loading: true })
+}
+
+// 用户申请退款（整单全额）：PAID_UNSHIPPED/SHIPPED 可申，生成 PENDING 售后单，等商家处理
 function applyRefund (id) {
   return request({ url: '/orders/' + id + '/refund', method: 'POST', auth: true, loading: true })
 }
 
-// 用户撤回退款申请：REFUND_REQUESTED -> PAID_UNSHIPPED
+// 用户撤回退款申请：删除 PENDING 售后单
 function revokeRefund (id) {
   return request({ url: '/orders/' + id + '/refund/revoke', method: 'POST', auth: true, loading: true })
 }
 
-// Demo：模拟商家后台同意退款/直接取消 -> CANCELLED（真实场景由 web 后台调用）
-function merchantCancel (id) {
-  return request({ url: '/orders/' + id + '/cancel', method: 'POST', auth: true, loading: true })
-}
-
-module.exports = { createPaidOrder, getList, getDetail, ship, applyRefund, revokeRefund, merchantCancel }
+module.exports = { createOrder, getList, getDetail, cancelOrder, confirmReceive, applyRefund, revokeRefund }

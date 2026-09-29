@@ -15,18 +15,23 @@
         <text class="d-title">{{goods.title}}</text>
         <text class="d-desc">{{goods.desc}}</text>
         <view class="d-meta">
-          <text>库存 {{goods.stock}}</text>
           <text>已售 {{goods.sold}}件</text>
           <text wx:if="{{goods.categoryName}}">{{goods.categoryName}}</text>
         </view>
+        <view class="d-ship" wx:if="{{shipTip}}"><icon name="truck" size="26" color="#1F1D1B" /><text>{{shipTip}}</text></view>
       </view>
     </view>
   </state-view>
 
   <view class="d-bar" wx:if="{{status === 'ok'}}">
-    <view class="d-bar-icon" bindtap="onService"><text class="d-bar-emoji">🎧</text><text class="d-bar-label">客服</text></view>
-    <view class="d-bar-icon" bindtap="goCart"><text class="d-bar-emoji">🛒</text><text class="d-bar-label">购物车</text></view>
-    <view class="d-bar-icon {{favorited ? 'on' : ''}}" bindtap="onFavorite"><text class="d-bar-emoji">{{favorited ? '❤️' : '🤍'}}</text><text class="d-bar-label">收藏</text></view>
+    <view class="d-bar-icon">
+      <view class="d-bar-emoji"><icon name="headset" size="38" color="#1F1D1B" /></view>
+      <text class="d-bar-label">客服</text>
+      <!-- 透明原生按钮覆盖整格：既拿到 open-type="contact" 能力，又不参与 flex 布局 -->
+      <button class="d-bar-hit" open-type="contact"></button>
+    </view>
+    <view class="d-bar-icon" bindtap="goCart"><view class="d-bar-emoji"><icon name="cart" size="38" color="#1F1D1B" /></view><text class="d-bar-label">购物车</text></view>
+    <view class="d-bar-icon {{favorited ? 'on' : ''}}" bindtap="onFavorite"><view class="d-bar-emoji"><icon name="heart" size="38" color="#1F1D1B" fill="{{favorited ? '#1F1D1B' : 'none'}}" /></view><text class="d-bar-label">收藏</text></view>
     <view class="d-bar-btn add" bindtap="onAddCart" hover-class="d-bar-btn-hover">加入购物车</view>
     <view class="d-bar-btn buy" bindtap="onBuy" hover-class="d-bar-btn-hover">立即购买</view>
   </view>

@@ -10,10 +10,10 @@
     <state-view status="{{cartStatus}}" empty-text="购物车空空如也~" bind:retry="loadCart">
       <view class="lines">
         <view class="line" wx:for="{{lines}}" wx:key="productId">
-          <view class="line-check {{item.checked ? 'on' : ''}}" data-id="{{item.productId}}" bindtap="onToggleCheck">{{item.checked ? '✓' : ''}}</view>
-          <goods-image src="{{item.product.images[0]}}" customClass="gi-thumb"></goods-image>
+          <view class="line-check {{item.checked ? 'on' : ''}}" data-id="{{item.productId}}" bindtap="onToggleCheck"><icon wx:if="{{item.checked}}" name="check" size="26" color="#fff" /></view>
+          <goods-image src="{{item.product.images[0]}}" customClass="gi-thumb" data-id="{{item.productId}}" bindtap="onLineDetail"></goods-image>
           <view class="line-info">
-            <text class="line-title">{{item.product.title}}</text>
+            <text class="line-title" data-id="{{item.productId}}" bindtap="onLineDetail">{{item.product.title}}</text>
             <view class="line-bottom">
               <text class="line-price">¥{{item.priceText}}</text>
               <view class="stepper">
@@ -29,18 +29,12 @@
     </state-view>
 
     <view class="cart-bar" wx:if="{{lines.length}}">
-      <view class="bar-check {{allChecked ? 'on' : ''}}" bindtap="onToggleAll">{{allChecked ? '✓' : ''}} 全选</view>
-      <text class="bar-total">合计 ¥{{totalText}}</text>
+      <view class="bar-check {{allChecked ? 'on' : ''}}" bindtap="onToggleAll"><icon wx:if="{{allChecked}}" name="check" size="24" color="#1F1D1B" /><text>全选</text></view>
+      <view class="bar-total">
+        <text>合计 ¥{{totalText}}</text>
+        <view class="bar-ship" wx:if="{{shipTip}}"><icon name="truck" size="22" color="#8B857C" /><text>{{shipTip}}</text></view>
+      </view>
       <view class="bar-btn" bindtap="onCheckout" hover-class="bar-btn-hover">去结算({{checkedCount}})</view>
     </view>
   </block>
-
-  <view class="rec-header">— 为您推荐 —</view>
-  <state-view status="{{recStatus}}" empty-text="暂无推荐" bind:retry="loadRecommend">
-    <view class="grid-2 rec-grid">
-      <view class="grid-item" wx:for="{{recommend}}" wx:key="id">
-        <goods-card goods="{{item}}" layout="grid" bind:cardtap="onCardTap" bind:cardadd="onCardAdd"></goods-card>
-      </view>
-    </view>
-  </state-view>
 </view>

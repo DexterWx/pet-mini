@@ -1,0 +1,21 @@
+.fav {
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding: 24rpx 0 40rpx;
+}
+
+.fav-grid {
+  padding: 0 24rpx;
+}
+
+.fav-tip {
+  margin-top: 8rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--color-text-sub);
+}
+
+/* 空态下的引导按钮 */
+.fav-empty-btn {
+  margin: 40rpx 120rpx 0;
+}

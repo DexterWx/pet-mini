@@ -11,18 +11,21 @@
     "pages/order/detail",
     "pages/login/login",
     "pages/profile/profile",
+    "pages/address/list",
     "pages/recharge/recharge",
-    "pages/contact/contact"
+    "pages/recharge/records",
+    "pages/favorites/favorites"
   ],
   "window": {
     "navigationBarTitleText": "蛋黄宠物烘焙",
-    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarBackgroundColor": "#FBF9F4",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#F6F6F6"
+    "backgroundColor": "#FBF9F4"
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#F0413E",
+    "custom": true,
+    "color": "#8B857C",
+    "selectedColor": "#1F1D1B",
     "backgroundColor": "#FFFFFF",
     "borderStyle": "black",
     "list": [
