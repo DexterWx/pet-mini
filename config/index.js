@@ -1,17 +1,31 @@
 // config/index.js
 // 全局配置：环境、后端地址、缓存策略、业务常量。
 
-// 开发机（跑 pet-back 的电脑）地址：模拟器与真机共用同一个值。
-// 真机必须用电脑的内网 IP —— 手机上的 127.0.0.1 是手机自己，连不到电脑。
-// 该值由 scripts/set-dev-host.sh 自动探测并回写，换网络后重跑一次即可，不需手改。
+// 后端来源模式（切换只改这一行）：
+//   'lan'    = 本机局域网 IP（开发者工具模拟器 / 同 WiFi 真机，日常开发默认）
+//   'tunnel' = cpolar 等公网临时域名（给不在局域网的人测试；对方需在“体验版”里开“开发调试”才不校验域名）
+//   'prod'   = 正式备案域名（上线）
+const BACKEND_MODE = 'tunnel'
+
+// —— lan：开发机地址，由 scripts/set-dev-host.sh 自动探测回写，换网络重跑一次即可，不需手改 ——
 const DEV_HOST = '192.168.50.111'
 const DEV_PORT = '8000'
+// —— tunnel：跑 `cpolar http 8000` 后，把公网地址（如 https://xxxx.cpolar.top）粘贴到这里，结尾不要斜杠 ——
+const TUNNEL_URL = 'https://3374bd58.r20.cpolar.top'
+// —— prod：备案后的正式 API 域名（上线用），结尾不要斜杠 ——
+const PROD_URL = 'https://api.yourdomain.com'
+
+function resolveBaseURL(mode) {
+  if (mode === 'tunnel') return TUNNEL_URL + '/api/v1/client'
+  if (mode === 'prod') return PROD_URL + '/api/v1/client'
+  return 'http://' + DEV_HOST + ':' + DEV_PORT + '/api/v1/client'
+}
 
 const config = {
-  env: 'dev',
+  env: BACKEND_MODE === 'prod' ? 'prod' : 'dev',
 
-  // 真实后端地址（开发者工具需勾选「不校验合法域名」；开发版真机不校验服务器域名）
-  baseURL: 'http://' + DEV_HOST + ':' + DEV_PORT + '/api/v1/client',
+  // 真实后端地址：lan 需开发者工具勾“不校验合法域名”；tunnel/prod 为 HTTPS，但临时域名靠对方开“开发调试”豁免校验
+  baseURL: resolveBaseURL(BACKEND_MODE),
 
   // 注：支付结果一律以服务端为准（订单轮询状态、充值轮询到账），
   // 旧版模拟支付的 autoSuccess 开关已随真实微信支付接入而移除。
