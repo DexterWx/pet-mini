@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "蛋黄宠物烘焙",
+  "navigationBarTitleText": "元宝宠物零食铺",
   "enablePullDownRefresh": true,
   "usingComponents": {
     "search-bar": "/components/search-bar/search-bar",
