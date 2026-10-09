@@ -134,8 +134,8 @@
   position: fixed;
   left: 0;
   right: 0;
-  /* 抬高到自定义 tabBar 上方（安全区已由 tabBar 承担） */
-  bottom: 120rpx;
+  /* 需避开整个 tabBar 占位：120rpx 内容高度 + 底部安全区（只算 120rpx 会被手势条那一段盖住） */
+  bottom: calc(120rpx + env(safe-area-inset-bottom));
   z-index: 100;
   display: flex;
   align-items: center;

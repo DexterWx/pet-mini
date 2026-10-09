@@ -13,7 +13,11 @@
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* 整栏高度 120rpx（不含安全区）：各 tab 页的底部留白/固定条偏移以此为准 */
+/* 整栏实际占高 = 120rpx（下面 .tabbar-inner）+ env(safe-area-inset-bottom) + 2rpx 上边线。
+   各 tab 页避让时必须把安全区也算进去：
+   - 滚动页：padding-bottom: calc(N + 120rpx + env(safe-area-inset-bottom))
+   - 整屏 flex 页：height: calc(100vh - 120rpx - env(safe-area-inset-bottom))
+   - 页内 fixed 条：bottom: calc(120rpx + env(safe-area-inset-bottom)) */
 .tabbar-inner {
   height: 120rpx;
   display: flex;
